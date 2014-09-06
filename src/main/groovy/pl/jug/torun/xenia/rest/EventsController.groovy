@@ -29,17 +29,44 @@ class EventsController {
       return new EventsResponse(events: eventRepository.findAll().collect {
            event -> new EventResponse(event)
        })
-
     }
+
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = ["application/json"])
     String refresh() {
         List<Event> events = meetupClient.findAllEvents()
-        events.each { event ->
-            List<Member> members = meetupClient.findAllAttendeesOfEvent(event.meetupId)
-            event.attendees = members
-            eventRepository.save(event)
+        List<Event> existingEvents = eventRepository.findAll()
+
+        events.each { remoteEvent ->
+            Event event = existingEvents.find { it.meetupId == remoteEvent.meetupId }
+            if (event) {
+                updateEvent(event, remoteEvent)
+            } else {
+                createNewEvent(remoteEvent)
+            }
         }
 
         return [status: 'OK']
+    }
+
+    private Event updateEvent(Event existingEvent, Event remoteEvent) {
+        existingEvent.title = remoteEvent.title
+
+        List<Member> members = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+
+        List<Long> existingMembersIds = existingEvent.attendees.inject([]) { acc, member -> acc << member.id }
+
+        members.findAll { !existingMembersIds.contains(it.meetupId) }.each {
+            existingEvent.attendees.add(it)
+        }
+
+        eventRepository.save(existingEvent)
+        return existingEvent
+    }
+
+    private Event createNewEvent(Event remoteEvent) {
+        List<Member> members = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+        remoteEvent.attendees = members
+        eventRepository.save(remoteEvent)
+        return remoteEvent
     }
 }
