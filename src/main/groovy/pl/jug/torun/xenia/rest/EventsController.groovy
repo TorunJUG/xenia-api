@@ -35,7 +35,7 @@ class EventsController {
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = ["application/json"])
     String refresh() {
         eventRepository.save(new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
-                endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now()));
+                endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L));
         return "ok"
     }
     

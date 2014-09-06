@@ -33,11 +33,11 @@ class Event {
     List<Member> attendees
     
     @CreatedDate
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocaLDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     LocalDateTime startDate
     
     @CreatedDate
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     LocalDateTime endDate
 
     @Column(nullable = false)
