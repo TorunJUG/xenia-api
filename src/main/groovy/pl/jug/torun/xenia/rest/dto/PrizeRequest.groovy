@@ -13,6 +13,13 @@ class PrizeRequest {
     String sponsorName
     String imageUrl
 
+    PrizeRequest(String name, String producer, String sponsorName, String imageUrl) {
+        this.name = name
+        this.producer = producer
+        this.sponsorName = sponsorName
+        this.imageUrl = imageUrl
+    }
+
     Prize toPrize() {
         return new Prize(name: name, producer: producer, sponsorName: sponsorName, imageUrl: imageUrl)
     }
