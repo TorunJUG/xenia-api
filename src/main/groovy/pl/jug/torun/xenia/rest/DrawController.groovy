@@ -26,7 +26,7 @@ class DrawController {
 
     @RequestMapping( method = RequestMethod.PUT, produces = ["application/json"], consumes = ["application/json"])
     Map draw(@PathVariable('eventId') long eventId, @PathVariable('giveAwayId') long giveAwayId) {
-        return ["resourceUrl": '/event/' + eventId + '/giveaway/' + giveAwayId + '/draw/1']
+        
     }
 
     @RequestMapping(value = '/{id}', method = RequestMethod.PATCH, produces = ["application/json"], consumes = ["application/json"])

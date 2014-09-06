@@ -17,10 +17,10 @@ class GiveAway {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
-    @OneToOne
+    @OneToOne(optional = false)
     Prize prize
     @Column(nullable = false)
-    Integer amount
+    int amount
     @OneToMany(cascade = CascadeType.PERSIST)
     List<Draw> draws
 }
