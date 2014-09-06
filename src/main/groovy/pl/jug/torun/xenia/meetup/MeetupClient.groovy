@@ -3,11 +3,13 @@ package pl.jug.torun.xenia.meetup
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import org.joda.time.LocalDateTime
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.Member
 
 @Service
+@ConfigurationProperties(prefix = "meetup")
 class MeetupClient {
 
     private static final String MEETUP_API_HOST = 'https://api.meetup.com'
