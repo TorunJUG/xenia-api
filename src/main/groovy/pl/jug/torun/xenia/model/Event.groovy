@@ -30,7 +30,7 @@ class Event {
     @OneToMany(cascade = CascadeType.ALL)
     List<GiveAway> giveAways
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Member> attendees
     
     @CreatedDate
