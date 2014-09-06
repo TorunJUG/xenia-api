@@ -48,7 +48,7 @@ class MeetupClient {
 
     private static class EventConverter {
         static Event createFromJSON(Map json) {
-            LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.created))
+            LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
             LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
 
             return new Event(
