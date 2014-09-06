@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.model.Event
+import pl.jug.torun.xenia.model.Member
 import pl.jug.torun.xenia.rest.dto.EventResponse
 import pl.jug.torun.xenia.rest.dto.EventsResponse
 import pl.jug.torun.xenia.rest.dto.PrizesResponse
@@ -32,8 +33,12 @@ class EventsController {
     }
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = ["application/json"])
     String refresh() {
-        eventRepository.save(new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
-                endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L));
+        def event = new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
+                endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L, attendees: [
+                new Member(displayName: "Zbyszko Papierski", meetupId: 123, photoUrl: "alals"),
+                new Member(displayName: "Szymon Stepniak", meetupId: 123, photoUrl: "alaaals")
+        ])
+        eventRepository.save(event);
 
         eventRepository.save(new Event(title: "Hackaton #2", startDate: LocalDateTime.now(),
                 endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L));
