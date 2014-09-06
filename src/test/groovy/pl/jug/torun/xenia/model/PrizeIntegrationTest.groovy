@@ -31,6 +31,6 @@ class PrizeIntegrationTest {
         //when:
         Prize persistedPrize = prizeRepository.save(prize)
         //then:
-        assertThat(persistedPrize.id).isGreaterThan(0)
+        assertThat(persistedPrize.id).isGreaterThan(0L)
     }
 }
