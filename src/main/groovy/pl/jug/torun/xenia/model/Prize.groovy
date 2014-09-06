@@ -13,7 +13,7 @@ import javax.persistence.Id
 class Prize {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    long id;
 
     @Column(nullable = false)
     String name
