@@ -17,8 +17,8 @@ class GiveAwaysController {
     @RequestMapping(method = RequestMethod.GET, produces = ["application/json"])
     GiveAwaysResponse getGiveAways() {
         return new GiveAwaysResponse(giveAways: [
-                new GiveAwayResponse(prizeId: 1, amount: 2),
-                new GiveAwayResponse(prizeId: 2, amount: 1)
+                new GiveAwayResponse(id: 1, prizeId: 1, amount: 2),
+                new GiveAwayResponse(id: 2, prizeId: 2, amount: 1)
                 
         ])
         
