@@ -27,7 +27,7 @@ class Event {
     @Column(nullable = false)
     String title
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     List<GiveAway> giveAways
     
     @OneToMany(cascade = CascadeType.ALL)

@@ -26,6 +26,9 @@ class GiveAwayController {
     @Autowired
     PrizeRepository prizeRepository
     
+    @Autowired
+    GiveAwayServiceInterface giveAwayService
+    
     @RequestMapping(value = '/{id}', method = RequestMethod.GET)
     GiveAwayResponse getGiveAway(@PathVariable("eventId") long eventId, @PathVariable('id') long id) {
         return new GiveAwayResponse(eventRepository.getOne(eventId).giveAways.find({it.id = id}))      
@@ -33,14 +36,10 @@ class GiveAwayController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = ["application/json"])
     Map putGiveAway(@PathVariable('eventId') long eventId, @RequestBody GiveAwayRequest request) {
-        def giveAway = new GiveAway(amount: request.amount)
-        giveAway.prize = prizeRepository.getOne(request.prizeId)
-        def event = eventRepository.getOne(eventId)
-        event.giveAways.add(giveAway)
+       
+        def giveAway = giveAwayService.saveGiveAway(eventId, request)
         
-        eventRepository.save(event)
-        
-        return [resourceUrl: "/events/$eventId/giveaway/$giveAway.id".toString()]
+        return [resourceUrl: "/event/$eventId/giveaway/$giveAway.id".toString()]
     }
     
 }
