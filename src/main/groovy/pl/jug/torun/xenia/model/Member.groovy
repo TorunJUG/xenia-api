@@ -19,9 +19,19 @@ class Member {
     long id
     @Column(nullable = false)
     String displayName
-    @Column(nullable = false)
+    @Column(nullable = true)
     String photoUrl
     @Column(nullable = false)
     long meetupId
-    
+
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", displayName='" + displayName + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", meetupId=" + meetupId +
+                '}';
+    }
 }

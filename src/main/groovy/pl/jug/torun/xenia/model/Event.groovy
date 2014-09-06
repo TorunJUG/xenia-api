@@ -43,5 +43,19 @@ class Event {
 
     @Column(nullable = false)
     LocalDateTime updatedAt
-    
+
+
+    @Override
+    public java.lang.String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", meetupId=" + meetupId +
+                ", title='" + title + '\'' +
+                ", giveAways=" + giveAways +
+                ", attendees=" + attendees +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }
