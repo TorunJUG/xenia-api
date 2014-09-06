@@ -27,8 +27,8 @@ class GiveAwayController {
     PrizeRepository prizeRepository
     
     @RequestMapping(value = '/{id}', method = RequestMethod.GET)
-    GiveAwayResponse getGiveAway(@PathVariable("eventId") long eventId, @PathVariable('id') id) {
-        return GiveAwayResponse(giveAways: eventRepository.getOne(eventId).giveAways.collect {new GiveAwayResponse(it)})      
+    GiveAwayResponse getGiveAway(@PathVariable("eventId") long eventId, @PathVariable('id') long id) {
+        return new GiveAwayResponse(eventRepository.getOne(eventId).giveAways.find({it.id = id}))      
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = ["application/json"])
