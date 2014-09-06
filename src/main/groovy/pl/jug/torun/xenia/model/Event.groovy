@@ -27,10 +27,10 @@ class Event {
     @Column(nullable = false)
     String title
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     List<GiveAway> giveAways
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Member> attendees
     
     @CreatedDate
