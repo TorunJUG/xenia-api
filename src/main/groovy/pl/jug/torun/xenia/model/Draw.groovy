@@ -23,7 +23,7 @@ class Draw {
     Member attendee
 
     @CreatedDate
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     LocalDateTime drawDate
 
     @Column(nullable = false)
