@@ -1,32 +1,75 @@
 package pl.jug.torun.xenia.meetup
 
-import org.apache.http.HttpResponse
-import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.HttpClientBuilder
+import groovyx.net.http.HttpResponseDecorator
+import groovyx.net.http.RESTClient
+import org.joda.time.LocalDateTime
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
+import pl.jug.torun.xenia.model.Event
+import pl.jug.torun.xenia.model.Member
 
 @Service
+@ConfigurationProperties(prefix = "meetup")
 class MeetupClient {
 
     private static final String MEETUP_API_HOST = 'https://api.meetup.com'
-    private static final String FORMAT = 'json'
 
-    String key;
+    @Value('${meetup.key:""}')
+    String key
 
-    List findAllEvents() {
-        HttpClient client = HttpClientBuilder.create().build()
-        HttpGet request = new HttpGet(getEndpointUrl('/2/events', [key: key]))
+    String groupUrlName
 
-        //HttpResponse response = client.execute(request)
+    List<Event> findAllEvents() {
+        RESTClient request = new RESTClient(MEETUP_API_HOST)
 
+        Map params = [key: key, group_urlname: groupUrlName, status: 'upcoming,past']
 
-        return null
+        HttpResponseDecorator response = request.get(
+                path: '/2/events.json',
+                query: params,
+                contentType: 'application/json'
+        ) as HttpResponseDecorator
+
+        return response.data?.results?.collect { EventConverter.createFromJSON(it) }
     }
 
-    private static String getEndpointUrl(String endpoint, Map params = [:]) {
+    List<Member> findAllAttendeesOfEvent(Long id) {
+        RESTClient request = new RESTClient(MEETUP_API_HOST)
 
+        Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
 
-        return MEETUP_API_HOST + endpoint + '.' + FORMAT + '?' + (params.inject('') { queryString, k, v -> queryString += "$k=$v&" })
+        HttpResponseDecorator response = request.get(
+                path: '/2/rsvps.json',
+                query: params,
+                contentType: 'application/json'
+        ) as HttpResponseDecorator
+
+        return response?.data?.results?.collect { MemberConverter.createFromJSON(it) }
+    }
+
+    private static class EventConverter {
+        static Event createFromJSON(Map json) {
+            LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
+            LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
+
+            return new Event(
+                    title: json?.name,
+                    meetupId: json?.id as Long,
+                    startDate: startDate,
+                    endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
+                    updatedAt: lastUpdate
+            )
+        }
+    }
+
+    private static class MemberConverter {
+        static Member createFromJSON(Map json) {
+            return new Member(
+                    displayName: json?.member?.name,
+                    meetupId: json?.member?.member_id,
+                    photoUrl: json?.member_photo?.thumb_link
+            )
+        }
     }
 }
