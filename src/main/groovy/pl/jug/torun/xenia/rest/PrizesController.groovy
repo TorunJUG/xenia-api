@@ -11,7 +11,6 @@ import pl.jug.torun.xenia.rest.dto.PrizesResponse
  * Created by mephi_000 on 06.09.14.
  */
 @RestController
-@Controller
 @RequestMapping("/prizes")
 class PrizesController {
 
