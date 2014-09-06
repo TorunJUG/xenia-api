@@ -32,7 +32,7 @@ class MeetupClient {
         return response.data?.results?.collect { EventConverter.createFromJSON(it) }
     }
 
-    List<Member> findAllForEvent(Long id) {
+    List<Member> findAllAttendeesOfEvent(Long id) {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
         Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
