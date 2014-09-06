@@ -12,7 +12,7 @@ import pl.jug.torun.xenia.rest.dto.AttendeesResponse
  * Created by mephi_000 on 06.09.14.
  */
 @RestController
-@RequestMapping("/attendees")
+@RequestMapping("/event/{eventId}/attendees")
 class AttendeesController {
     
     

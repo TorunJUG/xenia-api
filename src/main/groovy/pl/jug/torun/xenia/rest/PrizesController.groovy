@@ -4,12 +4,13 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import pl.jug.torun.xenia.rest.dto.PrizeResponse
+import pl.jug.torun.xenia.rest.dto.PrizesResponse
 
 /**
  * Created by mephi_000 on 06.09.14.
  */
 @RestController
-@Controller
 @RequestMapping("/prizes")
 class PrizesController {
 
