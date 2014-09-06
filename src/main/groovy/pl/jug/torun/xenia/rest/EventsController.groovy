@@ -25,16 +25,17 @@ class EventsController {
 
     @RequestMapping(method = RequestMethod.GET, produces = ["application/json"])
     EventsResponse getEvents() {
-        return new EventsResponse(events: [
-                new EventResponse(id: 1, title: "Hackathon", startDate: LocalDateTime.now(),
-                        endDate: LocalDateTime.now().plusHours(1)), 
-                new EventResponse(id: 2, title: "Hackathon #2", startDate: LocalDateTime.now(),
-                        endDate: LocalDateTime.now().plusHours(1))])
+      return new EventsResponse(events: eventRepository.findAll().collect {
+           event -> new EventResponse(event)
+       })
 
     }
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = ["application/json"])
     String refresh() {
         eventRepository.save(new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
+                endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L));
+
+        eventRepository.save(new Event(title: "Hackaton #2", startDate: LocalDateTime.now(),
                 endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L));
         return "ok"
     }
