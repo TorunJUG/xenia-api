@@ -40,7 +40,7 @@ class GiveAwayController {
         
         eventRepository.save(event)
         
-        return [resourceUrl: "/events/$eventId/giveaway/$giveAway.id"]
+        return [resourceUrl: "/events/$eventId/giveaway/$giveAway.id".toString()]
     }
     
 }
