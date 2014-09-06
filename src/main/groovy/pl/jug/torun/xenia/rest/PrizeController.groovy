@@ -27,6 +27,6 @@ public class PrizeController {
     Map create(@RequestBody PrizeRequest request) {
         Prize prize = request.toPrize()
         prize = prizeRepository.save(prize)
-        return [resourceUrl: "/prize/${prize?.id}"]
+        return [resourceUrl: "/prize/${prize?.id}".toString()]
     }
 }
