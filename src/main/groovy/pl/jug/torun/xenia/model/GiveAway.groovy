@@ -17,7 +17,7 @@ class GiveAway {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
-    @OneToOne(optional = false)
+    @OneToOne
     Prize prize
     @Column(nullable = false)
     int amount

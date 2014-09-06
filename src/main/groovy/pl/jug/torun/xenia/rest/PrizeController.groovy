@@ -11,7 +11,7 @@ import pl.jug.torun.xenia.rest.dto.PrizeRequest
  * Created by mephi_000 on 06.09.14.
  */
 @RestController
-@RequestMapping(value = '/prize', produces = ['application/json'], consumes = ['application/json'])
+@RequestMapping(value = '/prize', produces = ['application/json'])
 public class PrizeController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class PrizeController {
         return new PrizeResponse(prize)
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = ['application/json'])
     Map create(@RequestBody PrizeRequest request) {
         Prize prize = request.toPrize()
         prize = prizeRepository.save(prize)
