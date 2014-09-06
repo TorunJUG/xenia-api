@@ -1,30 +1,32 @@
 package pl.jug.torun.xenia.rest
 
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import pl.jug.torun.xenia.rest.dto.PrizeResponse;
-import pl.jug.torun.xenia.rest.dto.PrizesResponse
-import pl.jug.torun.xenia.rest.dto.PutPrizeRequest;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
+import pl.jug.torun.xenia.dao.PrizeRepository
+import pl.jug.torun.xenia.model.Prize
+import pl.jug.torun.xenia.rest.dto.PrizeResponse
+import pl.jug.torun.xenia.rest.dto.PrizeRequest
 
 /**
  * Created by mephi_000 on 06.09.14.
  */
 @RestController
-@RequestMapping("/prize")
+@RequestMapping(value = '/prize', produces = ['application/json'], consumes = ['application/json'])
 public class PrizeController {
 
-    @RequestMapping(value = '/{id}', method = RequestMethod.GET, produces = ["application/json"])
-    PrizeResponse getPrize(@PathVariable('id') int id) {
-        return new PrizeResponse(id: id, name: 'IntelliJ dla Zbyszka', producer: 'Jetbrains',
-                sponsorName: 'Grupa Allegro', imageUrl: 'http://rusticode.com/wp-content/uploads/2014/05/intellijidea-logo.png')
+    @Autowired
+    PrizeRepository prizeRepository
 
+    @RequestMapping(value = '/{id}', method = RequestMethod.GET)
+    PrizeResponse get(@PathVariable('id') int id) {
+        Prize prize = prizeRepository.getOne(id)
+        return new PrizeResponse(prize)
     }
 
-    @RequestMapping( method = RequestMethod.PUT, produces = ["application/json"], consumes = ["application/json"])
-    Map insertPrize(@RequestBody PutPrizeRequest request) {
-        return ["resourceUrl": "/prizes/12"]
+    @RequestMapping(method = RequestMethod.POST)
+    Map create(@RequestBody PrizeRequest request) {
+        Prize prize = request.toPrize()
+        prize = prizeRepository.save(prize)
+        return [resourceUrl: "/prize/${prize?.id}"]
     }
 }
