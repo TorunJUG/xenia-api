@@ -39,7 +39,7 @@ class GiveAwayController {
        
         def giveAway = giveAwayService.saveGiveAway(eventId, request)
         
-        return [resourceUrl: "/events/$eventId/giveaway/$giveAway.id".toString()]
+        return [resourceUrl: "/event/$eventId/giveaway/$giveAway.id".toString()]
     }
     
 }
