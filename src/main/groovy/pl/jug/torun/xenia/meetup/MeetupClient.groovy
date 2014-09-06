@@ -3,6 +3,7 @@ package pl.jug.torun.xenia.meetup
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import org.joda.time.LocalDateTime
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import pl.jug.torun.xenia.model.Event
@@ -14,6 +15,7 @@ class MeetupClient {
 
     private static final String MEETUP_API_HOST = 'https://api.meetup.com'
 
+    @Value('${meetup.key:""}')
     String key
 
     String groupUrlName
@@ -53,7 +55,7 @@ class MeetupClient {
 
             return new Event(
                     title: json?.name,
-                    meetupId: Long.valueOf(json?.id),
+                    meetupId: json?.id as Long,
                     startDate: startDate,
                     endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
                     updatedAt: lastUpdate
