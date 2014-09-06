@@ -7,7 +7,7 @@ import pl.jug.torun.xenia.model.Prize
  * Created by mephi_000 on 06.09.14.
  */
 class PrizeResponse {
-    final int id
+    final Long id
     final String name
     final String producer
     final String imageUrl

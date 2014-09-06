@@ -1,5 +1,6 @@
 package pl.jug.torun.xenia.model
 
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -20,6 +21,6 @@ class GiveAway {
     Prize prize
     @Column(nullable = false)
     Integer amount
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     List<Draw> draws
 }
