@@ -16,11 +16,15 @@ import javax.transaction.Transactional
 @Service
 class DrawService implements  DrawServiceInterface{
 
-    @Autowired
-    EventRepository eventRepository
+    
+    final EventRepository eventRepository
+    final DrawRepository drawRepository
     
     @Autowired
-    DrawRepository drawRepository
+    public DrawService(EventRepository eventRepository, DrawRepository drawRepository) {
+        this.drawRepository = drawRepository
+        this.eventRepository = eventRepository
+    }
     
     @Transactional
     public Draw draw(long eventId, long giveAwayId) {
