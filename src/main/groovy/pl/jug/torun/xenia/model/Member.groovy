@@ -21,9 +21,6 @@ class Member {
     String displayName
     @Column(nullable = true)
     String photoUrl
-    @Column(nullable = false)
-    long meetupId
-
 
     @Override
     public String toString() {
@@ -31,7 +28,7 @@ class Member {
                 "id=" + id +
                 ", displayName='" + displayName + '\'' +
                 ", photoUrl='" + photoUrl + '\'' +
-                ", meetupId=" + meetupId +
+                ", id=" + id +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.Member
+import pl.jug.torun.xenia.model.meetup.MeetupMember
 
 @Service
 @ConfigurationProperties(prefix = "meetup")
@@ -34,7 +35,7 @@ class MeetupClient {
         return response.data?.results?.collect { EventConverter.createFromJSON(it) }
     }
 
-    List<Member> findAllAttendeesOfEvent(Long id) {
+    List<MeetupMember> findAllAttendeesOfEvent(Long id) {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
         Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
@@ -64,11 +65,12 @@ class MeetupClient {
     }
 
     private static class MemberConverter {
-        static Member createFromJSON(Map json) {
-            return new Member(
+        static MeetupMember createFromJSON(Map json) {
+            return new MeetupMember(id: json?.member?.member_id,
+                    member: new Member(
                     displayName: json?.member?.name,
-                    meetupId: json?.member?.member_id,
                     photoUrl: json?.member_photo?.thumb_link
+            )
             )
         }
     }
