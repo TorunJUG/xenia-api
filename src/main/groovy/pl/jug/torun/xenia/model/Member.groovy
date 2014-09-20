@@ -28,7 +28,21 @@ class Member {
                 "id=" + id +
                 ", displayName='" + displayName + '\'' +
                 ", photoUrl='" + photoUrl + '\'' +
-                ", id=" + id +
                 '}';
+    }
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        Member member = (Member) o
+
+        if (id != member.id) return false
+
+        return true
+    }
+
+    int hashCode() {
+        return (int) (id ^ (id >>> 32))
     }
 }
