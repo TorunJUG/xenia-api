@@ -10,6 +10,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
 
 /**
@@ -30,7 +31,7 @@ class Event {
     @OneToMany
     List<GiveAway> giveAways
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     List<Member> attendees
     
     @CreatedDate
@@ -49,7 +50,7 @@ class Event {
     public java.lang.String toString() {
         return "Event{" +
                 "id=" + id +
-                ", meetupId=" + meetupId +
+                ", id=" + meetupId +
                 ", title='" + title + '\'' +
                 ", giveAways=" + giveAways +
                 ", attendees=" + attendees +

@@ -16,11 +16,15 @@ import javax.transaction.Transactional
 @Service
 class DrawService implements  DrawServiceInterface{
 
-    @Autowired
-    EventRepository eventRepository
+    
+    final EventRepository eventRepository
+    final DrawRepository drawRepository
     
     @Autowired
-    DrawRepository drawRepository
+    public DrawService(EventRepository eventRepository, DrawRepository drawRepository) {
+        this.drawRepository = drawRepository
+        this.eventRepository = eventRepository
+    }
     
     @Transactional
     public Draw draw(long eventId, long giveAwayId) {
@@ -28,7 +32,9 @@ class DrawService implements  DrawServiceInterface{
         def giveAway = event.giveAways.find { it.id = giveAwayId }
         def confirmed = giveAway.draws.count { it.confirmed }
         if (confirmed < giveAway.amount) {
-            def attendees = event.attendees
+            def attendeesAlreadyWon = giveAway.draws.findAll {it.confirmed}.attendee
+            def attendees = event.attendees - attendeesAlreadyWon
+        
             def winner = attendees.get(new Random().nextInt(attendees.size()))
             def draw = new Draw(attendee: winner, confirmed: false, drawDate: LocalDateTime.now())
             drawRepository.save(draw)
