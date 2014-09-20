@@ -68,8 +68,8 @@ class MeetupClient {
         static MeetupMember createFromJSON(Map json) {
             return new MeetupMember(id: json?.member?.member_id,
                     member: new Member(
-                    displayName: json?.member?.name,
-                    photoUrl: json?.member_photo?.thumb_link
+                        displayName: json?.member?.name,
+                        photoUrl: json?.member_photo?.thumb_link
             )
             )
         }
