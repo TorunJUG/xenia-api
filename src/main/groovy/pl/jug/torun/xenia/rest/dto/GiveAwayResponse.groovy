@@ -10,8 +10,10 @@ class GiveAwayResponse {
     int prizeId
     int amount
     String prizeName
-    
+    Boolean enabled
+
     GiveAwayResponse(GiveAway giveAway) {
+        this.enabled = giveAway.amount > giveAway.draws.findAll {it.confirmed}.size()
         this.id = giveAway.id
         this.prizeId = giveAway.prize.id
         this.amount = giveAway.amount

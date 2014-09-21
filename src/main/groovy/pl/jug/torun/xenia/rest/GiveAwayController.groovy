@@ -32,7 +32,9 @@ class GiveAwayController {
     
     @RequestMapping(value = '/{id}', method = RequestMethod.GET)
     GiveAwayResponse getGiveAway(@PathVariable("eventId") long eventId, @PathVariable('id') long id) {
-        return new GiveAwayResponse(giveAwayRepository.getOne(id))      
+        def giveAway = giveAwayRepository.getOne(id)
+        giveAway.amount > giveAway.draws.findAll {it.confirmed}.size()
+        return new GiveAwayResponse(giveAway)      
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = ["application/json"])
@@ -40,7 +42,7 @@ class GiveAwayController {
        
         def giveAway = giveAwayService.saveGiveAway(eventId, request)
         
-        return [resourceUrl: "/event/$eventId/giveaway/$giveAway.id".toString()]
+        return '{"resourceUrl": "' + "/event/$eventId/giveaway/$giveAway.id" + '"}' 
     }
     
 }

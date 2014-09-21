@@ -65,8 +65,12 @@ class DrawService implements  DrawServiceInterface{
         def draw = drawRepository.getOne(id)
         draw.confirmed = true
         drawRepository.save(draw)
-        meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee), 
-                giveAwayRepository.getOne(giveAwayId).prize)
+        try {
+            meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee),
+                    giveAwayRepository.getOne(giveAwayId).prize)
+        } catch (Exception e) {
+            //TODO: no problem if no mail sent for now
+        }
     }
     
     def getAvailableMembersForDraw(Event event, GiveAway giveAway) {

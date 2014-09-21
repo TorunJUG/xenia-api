@@ -35,14 +35,15 @@ class DrawController {
 
 
     @RequestMapping( method = RequestMethod.POST, produces = ["application/json"], consumes = ["application/json"])
-    Map draw(@PathVariable('eventId') long eventId, @PathVariable('giveAwayId') long giveAwayId) {
+    String draw(@PathVariable('eventId') long eventId, @PathVariable('giveAwayId') long giveAwayId) {
             
        def draw = drawService.draw(eventId, giveAwayId)
         if (draw != null) {
-            return [resourceUrl: "/event/${eventId}/giveaway/${giveAwayId}/draw/" + draw.id]
+            return '{"resourceUrl": "' + "/event/${eventId}/giveaway/${giveAwayId}/draw/${draw.id}" + '"}'
+
         } 
         
-        return [error: "No more prizes left!"]
+        return '{"error": "No more prizes left!"}'
         
     }
 
