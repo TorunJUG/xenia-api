@@ -10,9 +10,11 @@ class DrawResponse {
     long attendeeId
     String drawDate
     boolean confirmed
-    
+    String attendeeName
+
     DrawResponse(Draw draw) {
         this.attendeeId = draw.attendee.id
+        this.attendeeName = draw.attendee.displayName
         this.id = draw.id
         this.drawDate = draw.drawDate
         this.confirmed = draw.confirmed
