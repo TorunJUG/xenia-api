@@ -50,7 +50,7 @@ class EventsController {
             }
         }
 
-        return ['status': 'OK']
+        return '{"status":"OK"}'
     }
 
     private Event updateEvent(Event existingEvent, Event remoteEvent) {
