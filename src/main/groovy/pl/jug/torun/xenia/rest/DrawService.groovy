@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.dao.GiveAwayRepository
+import pl.jug.torun.xenia.dao.MeetupMemberRepository
 import pl.jug.torun.xenia.dao.PrizeRepository
+import pl.jug.torun.xenia.meetup.MeetupClient
 import pl.jug.torun.xenia.model.Draw
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.GiveAway
@@ -25,9 +27,14 @@ class DrawService implements  DrawServiceInterface{
     final EventRepository eventRepository
     final DrawRepository drawRepository
     final GiveAwayRepository giveAwayRepository
-    
+    private MeetupMemberRepository meetupMemberRepository
     @Autowired
-    public DrawService(EventRepository eventRepository, DrawRepository drawRepository, GiveAwayRepository giveAwayRepository) {
+    MeetupClient meetupClient
+
+    @Autowired
+    public DrawService(EventRepository eventRepository, DrawRepository drawRepository, GiveAwayRepository giveAwayRepository, 
+                       MeetupMemberRepository meetupMemberRepository) {
+        this.meetupMemberRepository = meetupMemberRepository
         this.giveAwayRepository = giveAwayRepository
         this.drawRepository = drawRepository
         this.eventRepository = eventRepository
@@ -36,7 +43,7 @@ class DrawService implements  DrawServiceInterface{
     @Transactional
     public Draw draw(long eventId, long giveAwayId) {
         def event = eventRepository.getOne(eventId)
-        def giveAway = event.giveAways.find { it.id = giveAwayId }
+        def giveAway = giveAwayRepository.getOne(giveAwayId)
         def confirmed = giveAway.draws.count { it.confirmed }
         if (confirmed < giveAway.amount) {
 
@@ -58,6 +65,8 @@ class DrawService implements  DrawServiceInterface{
         def draw = drawRepository.getOne(id)
         draw.confirmed = true
         drawRepository.save(draw)
+        meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee), 
+                giveAwayRepository.getOne(giveAwayId).prize)
     }
     
     def getAvailableMembersForDraw(Event event, GiveAway giveAway) {

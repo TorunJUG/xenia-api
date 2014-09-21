@@ -3,11 +3,13 @@ package pl.jug.torun.xenia.meetup
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import org.joda.time.LocalDateTime
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.Member
+import pl.jug.torun.xenia.model.Prize
 import pl.jug.torun.xenia.model.meetup.MeetupMember
 
 @Service
@@ -18,6 +20,24 @@ class MeetupClient {
 
     @Value('${meetup.key:""}')
     String key
+    @Value('${meetup.code:""}')
+    String code
+
+    @Value('${meetup.mail.subject_template:""}')
+    String subjectTemplate
+
+    @Value('${meetup.mail.body_template:""}')
+    String bodyTemplate
+
+
+    @Value('${meetup.groupId:""}')
+    String groupId
+
+    @Value('${meetup.access_token:""}')
+    String token
+
+    @Autowired
+    TokenRequester tokenRequester
 
     String groupUrlName
 
@@ -49,29 +69,47 @@ class MeetupClient {
         return response?.data?.results?.collect { MemberConverter.createFromJSON(it) }
     }
 
-    private static class EventConverter {
-        static Event createFromJSON(Map json) {
-            LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
-            LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
+    void sendGiveawayConfirmation(MeetupMember member, Prize prize) {
+        RESTClient request = new RESTClient(MEETUP_API_HOST)
 
-            return new Event(
-                    title: json?.name,
-                    meetupId: json?.id as Long,
-                    startDate: startDate,
-                    endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
-                    updatedAt: lastUpdate
-            )
-        }
+        Map params = [
+                dryrun   : true,
+                member_id: member.id, group_id: groupId, access_token: token,
+                subject  : String.format(subjectTemplate, prize.name), message: String.format(bodyTemplate, prize.name)
+        ]
+
+        def post = request.post(
+                path: '/2/message',
+                body: params,
+                contentType: 'application/x-www-form-urlencoded'
+        )
+       
     }
 
-    private static class MemberConverter {
-        static MeetupMember createFromJSON(Map json) {
-            return new MeetupMember(id: json?.member?.member_id,
-                    member: new Member(
-                        displayName: json?.member?.name,
-                        photoUrl: json?.member_photo?.thumb_link
-            )
-            )
+
+        private static class EventConverter {
+            static Event createFromJSON(Map json) {
+                LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
+                LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
+
+                return new Event(
+                        title: json?.name,
+                        meetupId: json?.id as Long,
+                        startDate: startDate,
+                        endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
+                        updatedAt: lastUpdate
+                )
+            }
+        }
+
+        private static class MemberConverter {
+            static MeetupMember createFromJSON(Map json) {
+                return new MeetupMember(id: json?.member?.member_id,
+                        member: new Member(
+                                displayName: json?.member?.name,
+                                photoUrl: json?.member_photo?.thumb_link
+                        )
+                )
+            }
         }
     }
-}
