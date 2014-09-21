@@ -4,6 +4,7 @@ import org.joda.time.LocalDateTime
 import org.mockito.Mock
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
+import pl.jug.torun.xenia.dao.GiveAwayRepository
 import pl.jug.torun.xenia.model.Draw
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.GiveAway
@@ -25,6 +26,8 @@ class DrawServiceTest extends Specification {
     EventRepository eventRepository
     @Mock
     DrawRepository drawRepository
+    @Mock
+    GiveAwayRepository giveAwayRepository
 
 
     def "can draw on new giveaway"() {
@@ -96,6 +99,7 @@ class DrawServiceTest extends Specification {
     }
     
 
+    
     private void confirmDraw(Draw draw) {
         draw.confirmed = true
         when(drawRepository.getOne(1L)).thenReturn(draw)
@@ -106,19 +110,19 @@ class DrawServiceTest extends Specification {
         initMocks(this)
         noOfAttendees = 2
         when(eventRepository.getOne(1L)).thenReturn(eventWith(1, 1, noOfAttendees, [1: new Prize(id: 1, name: "prize")], noOfPrizesPerGiveAway, draws))
-        return new DrawService(eventRepository, drawRepository)
+        return new DrawService(eventRepository, drawRepository, giveAwayRepository)
     }
 
     def eventWith(int id, int noOfGiveaways, int noOfMembers, Map<Integer, Prize> prizes, int drawsNo, List<Draw> draws) {
         List<Member> members = (1..noOfMembers).collect {
-            new Member(id: it, displayName: "attendee$it", photoUrl: "no-photo", meetupId: it)
+            new Member(id: it, displayName: "attendee$it", photoUrl: "no-photo")
         }
 
         List<GiveAway> giveAways = (1..noOfGiveaways).collect {
             new GiveAway(amount: drawsNo, id: it, prize: prizes[it], draws: draws)
         }
         return new Event(id: id, attendees: members, startDate: LocalDateTime.now(),
-                endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, meetupId: id, title: 'testEvent')
+                endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, title: 'testEvent')
 
     }
 

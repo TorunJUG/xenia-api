@@ -6,7 +6,12 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PathVariable
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
+import pl.jug.torun.xenia.dao.GiveAwayRepository
+import pl.jug.torun.xenia.dao.PrizeRepository
 import pl.jug.torun.xenia.model.Draw
+import pl.jug.torun.xenia.model.Event
+import pl.jug.torun.xenia.model.GiveAway
+import pl.jug.torun.xenia.model.Member
 
 import javax.transaction.Transactional
 
@@ -19,9 +24,11 @@ class DrawService implements  DrawServiceInterface{
     
     final EventRepository eventRepository
     final DrawRepository drawRepository
+    final GiveAwayRepository giveAwayRepository
     
     @Autowired
-    public DrawService(EventRepository eventRepository, DrawRepository drawRepository) {
+    public DrawService(EventRepository eventRepository, DrawRepository drawRepository, GiveAwayRepository giveAwayRepository) {
+        this.giveAwayRepository = giveAwayRepository
         this.drawRepository = drawRepository
         this.eventRepository = eventRepository
     }
@@ -32,9 +39,8 @@ class DrawService implements  DrawServiceInterface{
         def giveAway = event.giveAways.find { it.id = giveAwayId }
         def confirmed = giveAway.draws.count { it.confirmed }
         if (confirmed < giveAway.amount) {
-            def attendeesAlreadyWon = giveAway.draws.findAll {it.confirmed}.attendee
-            def attendees = event.attendees - attendeesAlreadyWon
-        
+
+            def attendees = getAvailableMembersForDraw(event, giveAway)
             def winner = attendees.get(new Random().nextInt(attendees.size()))
             def draw = new Draw(attendee: winner, confirmed: false, drawDate: LocalDateTime.now())
             drawRepository.save(draw)
@@ -53,4 +59,16 @@ class DrawService implements  DrawServiceInterface{
         draw.confirmed = true
         drawRepository.save(draw)
     }
+    
+    def getAvailableMembersForDraw(Event event, GiveAway giveAway) {
+        List<Member> memberWhoOneThePrize = (giveAwayRepository.findByPrize(giveAway.prize).draws.findAll {
+            it.confirmed
+        }).attendee.flatten()
+        List<Member> membersWhoWonOnEvent = event.giveAways.draws.findAll { it.confirmed }.attendee.flatten()
+ 
+        
+        return event.attendees - membersWhoWonOnEvent - memberWhoOneThePrize
+              
+    }
+    
 }
