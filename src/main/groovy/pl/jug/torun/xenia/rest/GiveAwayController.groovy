@@ -38,7 +38,7 @@ class GiveAwayController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = ["application/json"])
-    Map putGiveAway(@PathVariable('eventId') long eventId, @RequestBody GiveAwayRequest request) {
+    String putGiveAway(@PathVariable('eventId') long eventId, @RequestBody GiveAwayRequest request) {
        
         def giveAway = giveAwayService.saveGiveAway(eventId, request)
         
