@@ -1,6 +1,8 @@
 package pl.jug.torun.xenia.rest.dto
 
+import groovy.transform.Immutable
 import pl.jug.torun.xenia.model.GiveAway
+import pl.jug.torun.xenia.model.Member
 
 /**
  * Created by mephi_000 on 06.09.14.
@@ -11,6 +13,7 @@ class GiveAwayResponse {
     int amount
     String prizeName
     Boolean enabled
+    List<Winner> winners = []
 
     GiveAwayResponse(GiveAway giveAway) {
         this.enabled = giveAway.amount > giveAway.draws.findAll {it.confirmed}.size()
@@ -18,5 +21,19 @@ class GiveAwayResponse {
         this.prizeId = giveAway.prize.id
         this.amount = giveAway.amount
         this.prizeName = giveAway.prize.name
+
+        this.winners = giveAway.draws?.inject([]) { winners, draw ->
+            draw?.confirmed ? winners << new Winner(draw?.attendee) : winners
+        }
+    }
+
+    private static class Winner {
+        final long id
+        final String displayName
+
+        Winner(Member member) {
+            this.id = member?.id
+            this.displayName = member?.displayName
+        }
     }
 }
