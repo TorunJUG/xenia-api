@@ -5,5 +5,5 @@ Api for Xenia - JUG drawing machine based on Meetup (EventBrite coming soon!) wh
 
  mvn spring-boot:run
  
- Designed to work with Xenia-ng.
+ Designed to work with Xenia-ng. To work, you need to provide an api key into application.properties. Additionally, iif you want messaging, token also needs to be provided.
 
