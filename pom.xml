@@ -134,16 +134,31 @@
                 <extensions>true</extensions>
             </plugin>
             <plugin>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-maven</artifactId>
-                <version>0.6-groovy-1.8</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>find-specs</goal>
-                        </goals>
-                    </execution>
-                </executions>
+              <groupId>com.google.code.maven-replacer-plugin</groupId>
+              <artifactId>replacer</artifactId>
+              <version>1.5.3</version>
+              <executions>
+                <execution>
+                  <phase>prepare-package</phase>
+                  <goals>
+                    <goal>replace</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <file>target/classes/application.properties</file>
+                <regex>false</regex>
+                <replacements>
+                  <replacement>
+                    <token>meetup.key = xxx</token>
+                    <value>meetup.key = ${MEETUP_KEY}</value>
+                  </replacement>
+                  <replacement>
+                    <token>meetup.groupUrlName = yyy</token>
+                    <value>meetup.groupUrlName = ${MEETUP_NAME}</value>
+                  </replacement>
+                </replacements>
+              </configuration>
             </plugin>
         </plugins>
     </build>
