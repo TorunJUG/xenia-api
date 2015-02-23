@@ -72,12 +72,17 @@ class EventsController {
         eventRepository.save(remoteEvent)
         return remoteEvent
     }
-
+    //TODO: refactor to service
     private List<Member> persistandGetAttendees(Event remoteEvent) {
         List<MeetupMember> members = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
         return members.collect {
             def meetupMember = meetupMemberRepository.findOne(it.id)
-            if (meetupMember) meetupMember else meetupMemberRepository.save(it) 
+            if (meetupMember) {
+                meetupMember.member.displayName = it.member.displayName
+                meetupMember.member.photoUrl = it.member.photoUrl
+                meetupMemberRepository.save(meetupMember)
+                meetupMember
+            } else meetupMemberRepository.save(it) 
         }.member
     }
 }
