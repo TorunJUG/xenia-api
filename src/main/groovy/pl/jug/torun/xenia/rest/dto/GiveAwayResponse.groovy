@@ -14,6 +14,7 @@ class GiveAwayResponse {
     String prizeName
     Boolean enabled
     List<Winner> winners = []
+    List<Winner> drawn = []
     String imageUrl
 
     GiveAwayResponse(GiveAway giveAway) {
@@ -23,6 +24,7 @@ class GiveAwayResponse {
         this.amount = giveAway.amount
         this.prizeName = giveAway.prize.name
         this.imageUrl = giveAway.prize.imageUrl
+        this.drawn = giveAway.draws?.attendee?.collect{new Winner (it)}
 
         this.winners = giveAway.draws?.inject([]) { winners, draw ->
             draw?.confirmed ? winners << new Winner(draw?.attendee) : winners

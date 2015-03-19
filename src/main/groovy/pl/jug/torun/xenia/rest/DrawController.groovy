@@ -34,6 +34,7 @@ class DrawController {
     }
 
 
+
     @RequestMapping( method = RequestMethod.POST, produces = ["application/json"], consumes = ["application/json"])
     String draw(@PathVariable('eventId') long eventId, @PathVariable('giveAwayId') long giveAwayId) {
             
@@ -46,6 +47,8 @@ class DrawController {
         return '{"error": "No more prizes left!"}'
         
     }
+    
+    
 
     @RequestMapping(value = '/{id}', method = RequestMethod.PATCH, produces = ["application/json"], consumes = ["application/json"])
     Map updateDraw(@PathVariable('id') long id, @PathVariable('eventId') long eventId, @PathVariable('giveAwayId') long giveAwayId, @RequestBody DrawRequest drawRequest) {
@@ -53,4 +56,6 @@ class DrawController {
             drawService.confirmDraw(eventId, giveAwayId, id)
         return ["resourceUrl": "/event/$eventId/giveaway/$giveAwayId/draw/$id".toString()]
     }
+
+    
 }

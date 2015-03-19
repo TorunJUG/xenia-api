@@ -1,5 +1,7 @@
 package pl.jug.torun.xenia.model
 
+import groovy.transform.ToString
+
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -13,6 +15,7 @@ import javax.persistence.OneToOne
  * Created by mephi_000 on 06.09.14.
  */
 @Entity
+@ToString
 class GiveAway {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

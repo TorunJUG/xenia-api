@@ -28,7 +28,8 @@ class DrawsController {
 
         def aways = event.giveAways
         return new DrawsResponse(draws: aways.find{it.id == giveAwayId}.draws.collect{new DrawResponse(it)})
-        
 
     }
+    
+    
 }

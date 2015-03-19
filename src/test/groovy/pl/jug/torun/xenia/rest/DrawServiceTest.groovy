@@ -5,6 +5,7 @@ import org.mockito.Mock
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.dao.GiveAwayRepository
+import pl.jug.torun.xenia.dao.MeetupMemberRepository
 import pl.jug.torun.xenia.model.Draw
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.model.GiveAway
@@ -13,6 +14,7 @@ import pl.jug.torun.xenia.model.Prize
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
 import static org.mockito.MockitoAnnotations.initMocks
 
@@ -28,6 +30,8 @@ class DrawServiceTest extends Specification {
     DrawRepository drawRepository
     @Mock
     GiveAwayRepository giveAwayRepository
+
+    
 
 
     def "can draw on new giveaway"() {
@@ -109,8 +113,11 @@ class DrawServiceTest extends Specification {
     def getServiceWithSingleGiveAwayEvent(int noOfAttendees, int noOfPrizesPerGiveAway = 1, List<Draw> draws = []) {
         initMocks(this)
         noOfAttendees = 2
-        when(eventRepository.getOne(1L)).thenReturn(eventWith(1, 1, noOfAttendees, [1: new Prize(id: 1, name: "prize")], noOfPrizesPerGiveAway, draws))
-        return new DrawService(eventRepository, drawRepository, giveAwayRepository)
+
+
+        def event = eventWith(1, 1, noOfAttendees, [1: new Prize(id: 1, name: "prize")], noOfPrizesPerGiveAway, draws)
+        when(eventRepository.getOne(1L)).thenReturn(event)
+        return new DrawService(eventRepository, drawRepository, giveAwayRepository, mock(MeetupMemberRepository.class))
     }
 
     def eventWith(int id, int noOfGiveaways, int noOfMembers, Map<Integer, Prize> prizes, int drawsNo, List<Draw> draws) {
@@ -121,6 +128,9 @@ class DrawServiceTest extends Specification {
         List<GiveAway> giveAways = (1..noOfGiveaways).collect {
             new GiveAway(amount: drawsNo, id: it, prize: prizes[it], draws: draws)
         }
+
+        giveAways.each { when(giveAwayRepository.getOne(it.id)).thenReturn(it) }
+        
         return new Event(id: id, attendees: members, startDate: LocalDateTime.now(),
                 endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, title: 'testEvent')
 

@@ -1,5 +1,6 @@
 package pl.jug.torun.xenia.model
 
+import groovy.transform.ToString
 import org.hibernate.annotations.Type
 import org.joda.time.LocalDateTime
 import org.springframework.data.annotation.CreatedDate
@@ -15,6 +16,7 @@ import javax.persistence.OneToOne
  * Created by mephi_000 on 06.09.14.
  */
 @Entity
+@ToString(excludes = "drawDate")
 class Draw {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,5 +29,6 @@ class Draw {
     LocalDateTime drawDate
 
     @Column(nullable = false)
-    boolean confirmed
+    boolean confirmed = false
+
 }
