@@ -1,6 +1,5 @@
 package pl.jug.torun.xenia.rest.dto
 
-import groovy.transform.Immutable
 import pl.jug.torun.xenia.model.GiveAway
 import pl.jug.torun.xenia.model.Member
 
@@ -13,31 +12,39 @@ class GiveAwayResponse {
     int amount
     String prizeName
     Boolean enabled
-    List<Winner> winners = []
-    List<Winner> drawn = []
+    List<DrawnMember> winners = []
+    List<DrawnMember> drawn = []
     String imageUrl
 
     GiveAwayResponse(GiveAway giveAway) {
-        this.enabled = giveAway.amount > giveAway.draws.findAll {it.confirmed}.size()
+        this.enabled = giveAway.amount > giveAway.draws.findAll { it.confirmed }.size()
         this.id = giveAway.id
         this.prizeId = giveAway.prize.id
         this.amount = giveAway.amount
         this.prizeName = giveAway.prize.name
         this.imageUrl = giveAway.prize.imageUrl
-        this.drawn = giveAway.draws?.attendee?.collect{new Winner (it)}
+        this.drawn = giveAway.draws.collect {
+            new DrawnMember(it.attendee, it.id, it.confirmed)
+        }
 
         this.winners = giveAway.draws?.inject([]) { winners, draw ->
-            draw?.confirmed ? winners << new Winner(draw?.attendee) : winners
+            draw?.confirmed ? winners << new DrawnMember(draw?.attendee, draw?.id, true) : winners
         }
     }
 
-    private static class Winner {
+    private static class DrawnMember {
         final long id
+        final long drawId
         final String displayName
+        final boolean winner
+        final String photoUrl
 
-        Winner(Member member) {
+        DrawnMember(Member member, long drawId, boolean winner) {
             this.id = member?.id
+            this.drawId = drawId
             this.displayName = member?.displayName
+            this.photoUrl = member?.photoUrl
+            this.winner = winner
         }
     }
 }

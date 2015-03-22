@@ -30,8 +30,14 @@ class EventController {
     }
 
     @RequestMapping(value = '/{id}/all-draws', method = RequestMethod.POST, produces = ["application/json"])
-    String getDraw(@PathVariable('id') long eventId) {
+    String drawAll(@PathVariable('id') long eventId) {
         drawService.draw(eventId)
+        return "{\"status\": \"ok\"}"
+    }
+
+    @RequestMapping(value = '/{id}/draws/confirm', method = RequestMethod.POST, produces = ["application/json"])
+    String confirmAllDraws(@PathVariable('id') long eventId) {
+        drawService.confirmDraws(eventId)
         return "{\"status\": \"ok\"}"
     }
 }

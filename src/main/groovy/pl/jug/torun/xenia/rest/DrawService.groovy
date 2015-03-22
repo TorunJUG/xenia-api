@@ -61,6 +61,24 @@ class DrawService implements DrawServiceInterface {
     }
 
     @Transactional
+    public Draw draw(long id, long eventId, long giveAwayId) {
+        def event = eventRepository.getOne(eventId)
+        def giveAway = giveAwayRepository.getOne(giveAwayId)
+
+        def attendees = getAvailableMembersForDraw(event, giveAway)
+        println(event)
+        def winner = attendees.get(new Random().nextInt(attendees.size()))
+        def draw = drawRepository.getOne(id)
+        draw.attendee = winner
+        draw.drawDate = LocalDateTime.now()
+
+        drawRepository.save(draw)
+
+        return draw
+
+    }
+
+    @Transactional
     public void draw(long eventId) {
         def event = eventRepository.getOne(eventId)
         event.giveAways.each { giveAway ->
@@ -79,28 +97,35 @@ class DrawService implements DrawServiceInterface {
     }
 
 
-@Override
-def confirmDraw(long eventId, long giveAwayId, long id) {
-    def draw = drawRepository.getOne(id)
-    draw.confirmed = true
-    drawRepository.save(draw)
-    try {
-        meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee),
-                giveAwayRepository.getOne(giveAwayId).prize)
-    } catch (Exception e) {
-        //TODO: no problem if no mail sent for now
+    @Override
+    def confirmDraw(long eventId, long giveAwayId, long id) {
+        def draw = drawRepository.getOne(id)
+        draw.confirmed = true
+        drawRepository.save(draw)
+        try {
+            meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee),
+                    giveAwayRepository.getOne(giveAwayId).prize)
+        } catch (Exception e) {
+            //TODO: no problem if no mail sent for now
+        }
     }
-}
 
-def getAvailableMembersForDraw(Event event, GiveAway giveAway) {
-    List<Member> memberWhoWonThePrize = (giveAwayRepository.findByPrize(giveAway.prize).draws.findAll {
-        it.confirmed
-    }).attendee.flatten()
-//        List<Member> membersWhoWonOnEvent = event.giveAways.draws.findAll { it.confirmed  }.attendee.flatten()
+    @Override
+    def confirmDraws(long eventId) {
+        def event = eventRepository.getOne(eventId)
+        event.giveAways.each {giveAway ->
+            giveAway.draws.findAll {!it.confirmed} .each { it.confirmed = true}
+        }
+        eventRepository.save(event)
+    }
 
-//        return event.attendees - membersWhoWonOnEvent - memberWhoOneThePrize
-    return event.attendees - event.giveAways.draws.attendee.flatten() - memberWhoWonThePrize
+    def getAvailableMembersForDraw(Event event, GiveAway giveAway) {
+        List<Member> memberWhoWonThePrize = (giveAwayRepository.findByPrize(giveAway.prize).draws.findAll {
+            it.confirmed
+        }).attendee.flatten()
 
-}
+        return event.attendees - event.giveAways.draws.attendee.flatten() - memberWhoWonThePrize
+
+    }
 
 }

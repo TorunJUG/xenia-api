@@ -44,6 +44,18 @@ class DrawServiceTest extends Specification {
         draw.attendee.id in 1L..noOfAttendees
     }
 
+    def "can redraw on giveAway"() {
+        given:
+        def noOfAttendees = 2
+        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
+        when:
+        Draw draw = drawService.draw(1L, 1)
+        Draw newDraw = drawService.draw(draw.id, 1L, 1)
+        then:
+        draw.attendee.id in 1L..noOfAttendees  
+        
+    }
+    
     def "cannot draw on confirmed single draw giveaway"() {
 
         given:

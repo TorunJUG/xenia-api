@@ -1,5 +1,6 @@
 package pl.jug.torun.xenia
 
+import org.h2.tools.Server
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -18,6 +19,7 @@ class Application {
 
     
     static void main(String[] args) {
+        Server webServer = Server.createWebServer("-webPort","8090").start();
         SpringApplication.run Application, args
     }
 }

@@ -8,8 +8,10 @@ import pl.jug.torun.xenia.model.GiveAway
  */
 public interface DrawServiceInterface {
     public Draw draw(long eventId, long giveAwayId)
+    public Draw draw(long id, long eventId, long giveAwayId)
     
     public void draw(long eventId)
 
     def confirmDraw(long id, long eventId, long giveAwayId)
+    def confirmDraws(long eventId)
 }
