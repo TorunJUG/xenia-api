@@ -9,7 +9,7 @@ import pl.jug.torun.xenia.model.Member
 /**
  * Created by mephi_000 on 06.09.14.
  */
-interface MemberRepository  extends JpaRepository<Event, Long>{
+interface MemberRepository  extends JpaRepository<Member, Long>{
     
     
 }
