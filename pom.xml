@@ -186,6 +186,11 @@
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignores>
+                            <ignore>java.util.logging.*</ignore>
+                        </ignores>
+                    </instrumentation>
                 </configuration>
             </plugin>
             <plugin>
