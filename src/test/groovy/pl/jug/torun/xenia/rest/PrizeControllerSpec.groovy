@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import pl.jug.torun.xenia.Application
+import pl.jug.torun.xenia.dao.PrizeRepository
+import pl.jug.torun.xenia.model.Prize
 import spock.lang.Stepwise
 
 import static org.hamcrest.Matchers.*
@@ -36,7 +38,9 @@ class PrizeControllerSpec  {
     protected WebApplicationContext webApplicationContext
 
     protected MockMvc request
-
+    @Autowired
+    protected PrizeRepository prizeRepository
+    
     @Before
     void setup() {
         if (request == null) {
@@ -74,4 +78,51 @@ class PrizeControllerSpec  {
         response.andExpect(status().isCreated())
                 .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/2'))))
     }
+    
+    @Test
+    void shouldAllowUpdatingExistingPrizes(){
+        //given:
+        Prize prize = prizeRepository.save(new Prize(name: 'updateTest',producer:'Microsoft'))
+        String json = '{"name":"updateTestUpdated"}'
+        
+        //when:
+        def response = request.perform(put("/prize/${prize.id}").contentType(MediaType.APPLICATION_JSON).content(json))
+        
+        //then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.name', is(equalTo('updateTestUpdated'))))
+                .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
+                .andExpect(jsonPath('$.producer', is(equalTo('Microsoft'))))
+    }
+    
+    @Test
+    void shouldNotAllowToUseNameThatIsAlredyUsed(){
+        //given:
+        Prize prize1 = prizeRepository.save(new Prize(name: 'prize1',producer:'Microsoft'))
+        Prize prize2 = prizeRepository.save(new Prize(name: 'prize2',producer:'Microsoft'))
+        String json = '{"name":"prize2"}'
+        
+        //when:
+        def response = request.perform(put("/prize/${prize1.id}").contentType(MediaType.APPLICATION_JSON).content(json))
+        
+        //then:
+        response.andExpect(status().isBadRequest())
+    } 
+    
+    @Test
+    void shouldAllowUseTheSameNameWhileUpdatingProducer(){
+        //given:
+        Prize prize = prizeRepository.save(new Prize(name: 'prize4',producer:'Microsoft'))
+      
+        String json = '{"name":"prize4","producer":"Google"}'
+        
+        //when:
+        def response = request.perform(put("/prize/${prize.id}").contentType(MediaType.APPLICATION_JSON).content(json))
+        
+        //then:
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.name', is(equalTo('prize4'))))
+                .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
+                .andExpect(jsonPath('$.producer', is(equalTo('Google'))))
+    } 
 }

@@ -40,6 +40,22 @@ public class PrizeController {
         prize = prizeRepository.save(prize)
         return [resourceUrl: "/prize/${prize?.id}".toString()]
     }
+    
+    @RequestMapping(value="/{id}", method = RequestMethod.PUT, consumes = ['application/json'])
+    Prize update(@PathVariable('id') long id, @RequestBody PrizeRequest request){
+        Prize prize = prizeRepository.findOne(id)
+        
+        if (prizeRepository.countByNameAndIdNot(request.name,id) > 0) {
+            throw new IllegalArgumentException("Prize with name '${request.name}' already exists")
+        }
+        
+        prize.name = request.name ?: prize.name
+        prize.producer = request.producer ?: prize.producer
+        prize.imageUrl = request.imageUrl ?: prize.imageUrl
+        prize.sponsorName = request.sponsorName ?: prize.sponsorName
+        
+        return prizeRepository.save(prize)
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException)
@@ -48,4 +64,6 @@ public class PrizeController {
                 message: e.message
         ]
     }
+    
+    
 }
