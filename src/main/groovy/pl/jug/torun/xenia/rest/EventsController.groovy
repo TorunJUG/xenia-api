@@ -15,6 +15,8 @@ import pl.jug.torun.xenia.service.EventsService
 @RequestMapping("/events")
 class EventsController {
 
+    static final String OK_RESPONSE = '{"status":"OK"}'
+
     @Autowired
     EventsService eventsService
 
@@ -28,7 +30,7 @@ class EventsController {
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = ["application/json"])
     String refresh() {
         eventsService.refreshEvents()
-        return '{"status":"OK"}'
+        return OK_RESPONSE
     }
 
 }

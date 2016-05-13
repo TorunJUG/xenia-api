@@ -10,6 +10,7 @@ import pl.jug.torun.xenia.service.EventsService
 
 import static org.assertj.core.api.Assertions.assertThat
 import static org.mockito.Mockito.*
+import static pl.jug.torun.xenia.rest.EventsController.OK_RESPONSE
 
 /**
  * Created by mephi_000 on 06.09.14.
@@ -39,6 +40,14 @@ class EventsControllerTest {
 
         verify(eventsService).findAll()
         assertThat(eventsResponse.events).containsOnly(new EventResponse(EVENT1), new EventResponse(EVENT2))
+    }
+
+    @Test
+    public void "should refresh events"() throws Exception {
+        String refreshResponse = controller.refresh()
+
+        verify(eventsService).refreshEvents()
+        assertThat(refreshResponse).is(OK_RESPONSE)
     }
 
 }
