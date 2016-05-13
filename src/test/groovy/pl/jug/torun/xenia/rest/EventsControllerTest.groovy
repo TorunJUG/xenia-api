@@ -1,22 +1,30 @@
 package pl.jug.torun.xenia.rest
 
 import org.joda.time.LocalDateTime
+import org.junit.Before
 import org.junit.Test
-import org.springframework.test.util.ReflectionTestUtils
-import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.rest.dto.EventResponse
 import pl.jug.torun.xenia.rest.dto.EventsResponse
+import pl.jug.torun.xenia.service.EventsService
 
 import static org.assertj.core.api.Assertions.assertThat
-import static org.mockito.Mockito.mock
-import static org.mockito.Mockito.when
+import static org.mockito.Mockito.*
 
 /**
  * Created by mephi_000 on 06.09.14.
  */
 class EventsControllerTest {
 
+    private EventsController controller
+    private EventsService eventsService
+
+    @Before
+    public void setUp() throws Exception {
+        controller = new EventsController()
+        eventsService = mock(EventsService.class)
+        controller.eventsService = eventsService
+    }
 
     public static final Event EVENT1 = new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
             endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L)
@@ -25,13 +33,12 @@ class EventsControllerTest {
 
     @Test
     public void "should return current events"() {
-        def controllerUnderTest = new EventsController()
-        def repositoryMock = mock(EventRepository.class)
-        when(repositoryMock.findAll()).thenReturn([EVENT1, EVENT2])
-        ReflectionTestUtils.setField(controllerUnderTest, "eventRepository", repositoryMock)
-        
-        
-        assertThat(controllerUnderTest.getEvents().events).containsOnly(new EventResponse(EVENT1), new EventResponse(EVENT2))
+        when(eventsService.findAll()).thenReturn([EVENT1, EVENT2])
 
+        EventsResponse eventsResponse = controller.getEvents()
+
+        verify(eventsService).findAll()
+        assertThat(eventsResponse.events).containsOnly(new EventResponse(EVENT1), new EventResponse(EVENT2))
     }
+
 }
