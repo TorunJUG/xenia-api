@@ -40,6 +40,10 @@ class PrizeControllerIntegrationTest  {
         existingPrize = prizeRepository.save(new Prize(name: 'Istniejaca nagroda', producer: 'Zbyszko', sponsorName: 'Szymon'))
     }
 
+    void cleanUp() {
+
+    }
+
     @Test(expected = DataIntegrityViolationException.class)
     void shouldThrowAnExceptionIfPrizeWithNullNameIsTryingToBeAdded() {
         prizeController.create(new PrizeRequest(null, 'lorem', 'ipsum', null))

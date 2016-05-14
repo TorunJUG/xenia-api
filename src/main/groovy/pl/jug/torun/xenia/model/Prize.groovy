@@ -1,5 +1,7 @@
 package pl.jug.torun.xenia.model
 
+import org.hibernate.annotations.ColumnDefault
+
 import javax.persistence.*
 
 /**
@@ -22,4 +24,7 @@ class Prize {
 
     @Column(nullable = true)
     String sponsorName
+
+    @ColumnDefault("false")
+    boolean deleted = false
 }

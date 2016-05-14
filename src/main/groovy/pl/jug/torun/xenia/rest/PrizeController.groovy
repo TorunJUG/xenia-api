@@ -1,19 +1,14 @@
 package pl.jug.torun.xenia.rest
 
-import org.h2.jdbc.JdbcSQLException
-import org.hibernate.exception.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.bind.annotation.RequestMapping
 import pl.jug.torun.xenia.dao.GiveAwayRepository
 import pl.jug.torun.xenia.dao.PrizeRepository
 import pl.jug.torun.xenia.model.GiveAway
 import pl.jug.torun.xenia.model.Prize
-import pl.jug.torun.xenia.rest.dto.PrizeResponse
 import pl.jug.torun.xenia.rest.dto.PrizeRequest
-
+import pl.jug.torun.xenia.rest.dto.PrizeResponse
 
 /**
  * Created by mephi_000 on 06.09.14.
@@ -70,7 +65,8 @@ public class PrizeController {
         if(giveAways.size() == 0){
             prizeRepository.delete(id);
         } else {
-            throw new IllegalArgumentException("Prize with name '${prize.name}' is used. It can't be removed ")
+            prize.deleted = true
+            prizeRepository.save(prize)
         }
     }
     
