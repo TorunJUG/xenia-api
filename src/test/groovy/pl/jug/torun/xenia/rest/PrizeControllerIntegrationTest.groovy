@@ -3,23 +3,28 @@ package pl.jug.torun.xenia.rest
 import org.assertj.core.api.Condition
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.IntegrationTest
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import pl.jug.torun.xenia.Application
 import pl.jug.torun.xenia.dao.PrizeRepository
 import pl.jug.torun.xenia.model.Prize
 import pl.jug.torun.xenia.rest.dto.PrizeRequest
 import pl.jug.torun.xenia.rest.dto.PrizeResponse
 
+import javax.transaction.Transactional
+
 import static org.assertj.core.api.Assertions.assertThat
 
+@RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
 @IntegrationTest
-class PrizeControllerIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
+@Transactional
+class PrizeControllerIntegrationTest  {
 
     @Autowired
     PrizeController prizeController
@@ -31,6 +36,7 @@ class PrizeControllerIntegrationTest extends AbstractTransactionalJUnit4SpringCo
 
     @Before
     void setup() {
+        prizeRepository.deleteAll()
         existingPrize = prizeRepository.save(new Prize(name: 'Istniejaca nagroda', producer: 'Zbyszko', sponsorName: 'Szymon'))
     }
 
