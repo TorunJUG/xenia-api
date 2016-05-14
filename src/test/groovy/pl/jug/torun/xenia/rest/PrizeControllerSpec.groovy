@@ -61,8 +61,9 @@ class PrizeControllerSpec  {
         def response = request.perform(post("/prize").contentType(MediaType.APPLICATION_JSON).content(json))
 
         //then:
+        Long createdPrizeId = getCreatedPrizeId()
         response.andExpect(status().isCreated())
-                .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/1'))))
+                .andExpect(jsonPath('$.resourceUrl', is(equalTo("/prize/" + createdPrizeId))))
 
         //when:
         response = request.perform(post("/prize").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -76,9 +77,14 @@ class PrizeControllerSpec  {
 
         //then:
         response.andExpect(status().isCreated())
-                .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/2'))))
+                .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/' + (createdPrizeId + 1)))))
     }
-    
+
+    private long getCreatedPrizeId() {
+        List<Prize> allPrizes = prizeRepository.findAll()
+        return allPrizes ? allPrizes.last().id : 1
+    }
+
     @Test
     void shouldAllowUpdatingExistingPrizes(){
         //given:
