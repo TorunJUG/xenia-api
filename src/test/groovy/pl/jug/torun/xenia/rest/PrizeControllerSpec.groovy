@@ -21,12 +21,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import pl.jug.torun.xenia.Application
 import pl.jug.torun.xenia.dao.PrizeRepository
+import pl.jug.torun.xenia.dao.GiveAwayRepository
 import pl.jug.torun.xenia.model.Prize
+import pl.jug.torun.xenia.model.GiveAway
 import spock.lang.Stepwise
 
 import static org.hamcrest.Matchers.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
@@ -40,6 +43,8 @@ class PrizeControllerSpec  {
     protected MockMvc request
     @Autowired
     protected PrizeRepository prizeRepository
+    @Autowired
+    protected GiveAwayRepository giveAwayRepository
     
     @Before
     void setup() {
@@ -131,4 +136,31 @@ class PrizeControllerSpec  {
                 .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
                 .andExpect(jsonPath('$.producer', is(equalTo('Google'))))
     } 
+    
+    @Test
+    void shouldAllowDeletingPrize(){
+        //given: 
+         Prize prize = prizeRepository.save(new Prize(name: 'prizeDELETE',producer:'Microsoft'))
+         
+        //when: 
+        def response = request.perform(delete("/prize/${prize.id}"));
+        
+        //then: 
+        response.andExpect(status().isOk())
+        long count = prizeRepository.countByName('prizeDELETE')
+        assertThat(count).isEqualTo(0 as long)
+    }
+    
+    @Test
+    void shouldNotAllowDeletingUsedPrize(){
+        //given: 
+        Prize prize = prizeRepository.save(new Prize(name: 'prizeDELETE2',producer:'Microsoft'))
+        GiveAway giveaway = giveAwayRepository.save(new GiveAway(prize: prize, amount: 10))
+        
+        //when:
+        def response = request.perform(delete("/prize/${prize.id}"));
+        
+        //then:
+        response.andExpect(status().isBadRequest())
+    }
 }

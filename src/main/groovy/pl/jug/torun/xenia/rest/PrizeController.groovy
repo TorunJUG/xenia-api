@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.RequestMapping
+import pl.jug.torun.xenia.dao.GiveAwayRepository
 import pl.jug.torun.xenia.dao.PrizeRepository
+import pl.jug.torun.xenia.model.GiveAway
 import pl.jug.torun.xenia.model.Prize
 import pl.jug.torun.xenia.rest.dto.PrizeResponse
 import pl.jug.torun.xenia.rest.dto.PrizeRequest
@@ -21,6 +24,9 @@ public class PrizeController {
 
     @Autowired
     PrizeRepository prizeRepository
+    
+    @Autowired
+    GiveAwayRepository giveAwayRepository
 
     @RequestMapping(value = '/{id}', method = RequestMethod.GET)
     PrizeResponse get(@PathVariable('id') long id) {
@@ -56,6 +62,19 @@ public class PrizeController {
         
         return prizeRepository.save(prize)
     }
+    
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    void delete(@PathVariable('id') long id){
+        Prize prize = prizeRepository.findOne(id)
+        List<GiveAway> giveAways = giveAwayRepository.findByPrize(prize)
+        if(giveAways.size() == 0){
+            prizeRepository.delete(id);
+        } else {
+            throw new IllegalArgumentException("Prize with name '${prize.name}' is used. It can't be removed ")
+        }
+    }
+    
+    
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException)
