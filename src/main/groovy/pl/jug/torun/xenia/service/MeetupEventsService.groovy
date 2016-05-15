@@ -48,14 +48,7 @@ class MeetupEventsService implements EventsService {
 
     private Event updateEvent(Event existingEvent, Event remoteEvent) {
         existingEvent.title = remoteEvent.title
-
-        List<Member> members = persistentGetAttendees(remoteEvent)
-        List<Long> existingMembersIds = existingEvent.attendees.inject([]) { acc, member -> acc << member.id }
-
-        members.findAll { !existingMembersIds.contains(it.id) }.each {
-            existingEvent.attendees.add(it)
-        }
-
+        existingEvent = addNewAttendeesToMeetup(remoteEvent, existingEvent)
         eventRepository.save(existingEvent)
         return existingEvent
     }
@@ -66,16 +59,27 @@ class MeetupEventsService implements EventsService {
         return remoteEvent
     }
 
+    private Event addNewAttendeesToMeetup(Event remoteEvent, Event existingEvent) {
+        List<Member> members = persistentGetAttendees(remoteEvent)
+        List<Long> existingMembersIds = existingEvent.attendees*.id
+        members.findAll { !existingMembersIds.contains(it.id) }.each {
+            existingEvent.attendees.add(it)
+        }
+        return existingEvent
+    }
+
     private List<Member> persistentGetAttendees(Event remoteEvent) {
-        List<MeetupMember> members = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
-        return members.collect {
-            def meetupMember = meetupMemberRepository.findOne(it.id)
-            if (meetupMember) {
-                meetupMember.member.displayName = it.member.displayName
-                meetupMember.member.photoUrl = it.member.photoUrl
-                meetupMemberRepository.save(meetupMember)
-                meetupMember
-            } else meetupMemberRepository.save(it)
+        List<MeetupMember> remoteMembers = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+        return remoteMembers.collect { MeetupMember remoteMeetupMember ->
+            MeetupMember localMeetupMember = meetupMemberRepository.findOne(remoteMeetupMember.id)
+            if (localMeetupMember) {
+                localMeetupMember.member.displayName = remoteMeetupMember.member.displayName
+                localMeetupMember.member.photoUrl = remoteMeetupMember.member.photoUrl
+                meetupMemberRepository.save(localMeetupMember)
+                return localMeetupMember
+            } else {
+                return meetupMemberRepository.save(remoteMeetupMember)
+            }
         }.member
     }
 
