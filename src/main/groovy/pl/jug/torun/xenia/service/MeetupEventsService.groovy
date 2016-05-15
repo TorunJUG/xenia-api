@@ -33,11 +33,11 @@ class MeetupEventsService implements EventsService {
 
     @Override
     public void refreshEvents() {
-        List<Event> events = meetupClient.findAllEvents()
-        List<Event> existingEvents = this.findAll()
+        List<Event> remoteEvents = meetupClient.findAllEvents()
+        List<Event> localEvents = this.findAll()
 
-        events.each { remoteEvent ->
-            Event event = existingEvents.find { it.meetupId == remoteEvent.meetupId }
+        remoteEvents.each { remoteEvent ->
+            Event event = localEvents.find { it.meetupId == remoteEvent.meetupId }
             if (event) {
                 updateEvent(event, remoteEvent)
             } else {
