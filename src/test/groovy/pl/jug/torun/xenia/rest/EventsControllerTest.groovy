@@ -1,53 +1,45 @@
 package pl.jug.torun.xenia.rest
-
 import org.joda.time.LocalDateTime
-import org.junit.Before
-import org.junit.Test
 import pl.jug.torun.xenia.model.Event
 import pl.jug.torun.xenia.rest.dto.EventResponse
-import pl.jug.torun.xenia.rest.dto.EventsResponse
 import pl.jug.torun.xenia.service.EventsService
+import spock.lang.Specification
 
-import static org.assertj.core.api.Assertions.assertThat
-import static org.mockito.Mockito.*
 import static pl.jug.torun.xenia.rest.EventsController.OK_RESPONSE
-
 /**
  * Created by mephi_000 on 06.09.14.
  */
-class EventsControllerTest {
+class EventsControllerTest extends Specification {
 
-    private EventsController controller
-    private EventsService eventsService
+    EventsController controller
+    EventsService eventsService
 
-    @Before
-    public void setUp() throws Exception {
+    def setup() {
         controller = new EventsController()
-        eventsService = mock(EventsService.class)
+        eventsService = Mock(EventsService)
         controller.eventsService = eventsService
     }
 
-    public static final Event EVENT1 = new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
+    static final Event EVENT1 = new Event(title: "Hackaton #1", startDate: LocalDateTime.now(),
             endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L)
-    public static final Event EVENT2 = new Event(title: "Hackaton #2", startDate: LocalDateTime.now(),
+    static final Event EVENT2 = new Event(title: "Hackaton #2", startDate: LocalDateTime.now(),
             endDate: LocalDateTime.now().plusDays(1), updatedAt: LocalDateTime.now(), meetupId: 123123L)
 
-    @Test
-    public void "should return current events"() {
-        when(eventsService.findAll()).thenReturn([EVENT1, EVENT2])
-
-        EventsResponse eventsResponse = controller.getEvents()
-
-        verify(eventsService).findAll()
-        assertThat(eventsResponse.events).containsOnly(new EventResponse(EVENT1), new EventResponse(EVENT2))
+    def "Should return current events"() {
+        given:
+            eventsService.findAll() >> [EVENT1, EVENT2]
+        when:
+            def eventsResponse = controller.getEvents()
+        then:
+            eventsResponse.events == [new EventResponse(EVENT1), new EventResponse(EVENT2)]
     }
 
-    @Test
-    public void "should refresh events"() throws Exception {
-        String refreshResponse = controller.refresh()
-
-        verify(eventsService).refreshEvents()
-        assertThat(refreshResponse).is(OK_RESPONSE)
+    def "should refresh events"() {
+        when:
+            def refreshResponse = controller.refresh()
+        then:
+            1 * eventsService.refreshEvents()
+            refreshResponse == OK_RESPONSE
     }
 
 }
