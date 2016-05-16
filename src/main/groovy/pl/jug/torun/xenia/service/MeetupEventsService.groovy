@@ -48,28 +48,33 @@ class MeetupEventsService implements EventsService {
 
     private Event updateEvent(Event existingEvent, Event remoteEvent) {
         existingEvent.title = remoteEvent.title
-        existingEvent = addNewAttendeesToMeetup(remoteEvent, existingEvent)
+        existingEvent = refreshMeetupAttendees(remoteEvent, existingEvent)
         eventRepository.save(existingEvent)
         return existingEvent
     }
 
     private Event createNewEvent(Event remoteEvent) {
-        remoteEvent.attendees = persistentGetAttendees(remoteEvent)
+        List<MeetupMember> remoteMembers = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+        remoteEvent.attendees = createOrUpdateAttendees(remoteMembers)
         eventRepository.save(remoteEvent)
         return remoteEvent
     }
 
-    private Event addNewAttendeesToMeetup(Event remoteEvent, Event existingEvent) {
-        List<Member> members = persistentGetAttendees(remoteEvent)
+    private Event refreshMeetupAttendees(Event remoteEvent, Event existingEvent) {
+        List<MeetupMember> remoteMembers = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+
+        List<Member> members = createOrUpdateAttendees(remoteMembers)
         List<Long> existingMembersIds = existingEvent.attendees*.id
         members.findAll { !existingMembersIds.contains(it.id) }.each {
             existingEvent.attendees.add(it)
         }
+
+        removeAttendees(remoteMembers, existingEvent)
+
         return existingEvent
     }
 
-    private List<Member> persistentGetAttendees(Event remoteEvent) {
-        List<MeetupMember> remoteMembers = meetupClient.findAllAttendeesOfEvent(remoteEvent.meetupId)
+    private List<Member> createOrUpdateAttendees(List<MeetupMember> remoteMembers) {
         return remoteMembers.collect { MeetupMember remoteMeetupMember ->
             MeetupMember localMeetupMember = meetupMemberRepository.findOne(remoteMeetupMember.id)
             if (localMeetupMember) {
@@ -81,6 +86,16 @@ class MeetupEventsService implements EventsService {
                 return meetupMemberRepository.save(remoteMeetupMember)
             }
         }.member
+    }
+
+    private void removeAttendees(List<MeetupMember> remoteMembers, Event existingEvent) {
+        List<Member> attendees = new ArrayList<>(existingEvent.attendees)
+        attendees.collect { Member localMember ->
+            MeetupMember meetupMember = meetupMemberRepository.getByMember(localMember)
+            if (!remoteMembers*.id.contains(meetupMember.id)) {
+                existingEvent.attendees.remove(localMember)
+            }
+        }
     }
 
 }
