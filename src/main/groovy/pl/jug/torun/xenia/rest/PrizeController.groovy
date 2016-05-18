@@ -17,11 +17,15 @@ import pl.jug.torun.xenia.rest.dto.PrizeResponse
 @RequestMapping(value = '/prize', produces = ['application/json'])
 public class PrizeController {
 
+    final PrizeRepository prizeRepository
+
+    final GiveAwayRepository giveAwayRepository
+
     @Autowired
-    PrizeRepository prizeRepository
-    
-    @Autowired
-    GiveAwayRepository giveAwayRepository
+    PrizeController(PrizeRepository prizeRepository, GiveAwayRepository giveAwayRepository) {
+        this.prizeRepository = prizeRepository
+        this.giveAwayRepository = giveAwayRepository
+    }
 
     @RequestMapping(value = '/{id}', method = RequestMethod.GET)
     PrizeResponse get(@PathVariable('id') long id) {
