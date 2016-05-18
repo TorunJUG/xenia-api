@@ -1,30 +1,22 @@
 package pl.jug.torun.xenia.rest
 
-import org.assertj.core.api.Condition
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.IntegrationTest
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import pl.jug.torun.xenia.Application
 import pl.jug.torun.xenia.dao.PrizeRepository
 import pl.jug.torun.xenia.model.Prize
 import pl.jug.torun.xenia.rest.dto.PrizeRequest
-import pl.jug.torun.xenia.rest.dto.PrizeResponse
+import spock.lang.Specification
 
 import javax.transaction.Transactional
 
-import static org.assertj.core.api.Assertions.assertThat
-
-@RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
 @IntegrationTest
 @Transactional
-class PrizeControllerIntegrationTest  {
+class PrizeControllerIntegrationTest extends Specification {
 
     @Autowired
     PrizeController prizeController
@@ -32,47 +24,42 @@ class PrizeControllerIntegrationTest  {
     @Autowired
     PrizeRepository prizeRepository
 
-    Prize existingPrize
-
-    @Before
     void setup() {
         prizeRepository.deleteAll()
-        existingPrize = prizeRepository.save(new Prize(name: 'Istniejaca nagroda', producer: 'Zbyszko', sponsorName: 'Szymon'))
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    void shouldThrowAnExceptionIfPrizeWithNullNameIsTryingToBeAdded() {
-        prizeController.create(new PrizeRequest(null, 'lorem', 'ipsum', null))
+    def "Should throw an exception if prize with null name is trying to be added"() {
+        given:
+            def prizeRequest = new PrizeRequest(null, 'lorem', 'ipsum', null)
+        when:
+            prizeController.create(prizeRequest)
+        then:
+            thrown(DataIntegrityViolationException)
     }
 
-    @Test
-    void shouldReturnResourceUrlAfterCreatingNewPrize() {
-        //when:
-        Map response = prizeController.create(new PrizeRequest('Licencja IntelliJ IDEA', 'JetBrains', 'JetBrains', null))
-        //then:
-        response.resourceUrl =~ '/prize/[0-9]+'
+    def "Should return resource url after creating new prize"() {
+        given:
+            def prizeRequest = new PrizeRequest('Licencja IntelliJ IDEA', 'JetBrains', 'JetBrains', null)
+        when:
+            def response = prizeController.create(prizeRequest)
+        then:
+            response.resourceUrl =~ '/prize/[0-9]+'
     }
 
-    @Test
-    void shouldReturnPrizeResponseForRequestingExistingPrizeObject() {
-        //when:
-        PrizeResponse response = prizeController.get(existingPrize.id)
-        //then:
-        assertThat(response).is(createdFrom(existingPrize))
-    }
+    def "Should return prize response for requesting existing prize object"() {
+        given:
+            def existingPrize = prizeRepository.save(new Prize(name: 'Istniejaca nagroda', producer: 'Zbyszko', sponsorName: 'Szymon'))
 
-    private static Condition<PrizeResponse> createdFrom(final Prize prize) {
-        return new Condition<PrizeResponse>() {
-            @Override
-            boolean matches(PrizeResponse response) {
-                return response != null &&
-                        prize != null &&
-                        response.id == prize.id &&
-                        response.name == prize.name &&
-                        response.imageUrl == prize.imageUrl &&
-                        response.sponsorName == prize.sponsorName &&
-                        response.producer == prize.producer
+        when:
+            def response = prizeController.get(existingPrize.id)
+        then:
+            response.every {
+                it.id == existingPrize.id &&
+                        it.name == existingPrize.name &&
+                        it.imageUrl == existingPrize.imageUrl &&
+                        it.sponsorName == existingPrize.sponsorName &&
+                        it.producer == existingPrize.producer
             }
-        }
     }
+
 }
