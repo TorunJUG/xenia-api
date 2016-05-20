@@ -1,7 +1,6 @@
 package pl.jug.torun.xenia.rest
 
 import org.joda.time.LocalDateTime
-import org.mockito.Mock
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.dao.GiveAwayRepository
@@ -14,124 +13,95 @@ import pl.jug.torun.xenia.model.Prize
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.mockito.Mockito.mock
-import static org.mockito.Mockito.when
-import static org.mockito.MockitoAnnotations.initMocks
-
 /**
  * Created by mephi_000 on 2014-09-15.
  */
-
 class DrawServiceTest extends Specification {
 
-    @Mock
-    EventRepository eventRepository
-    @Mock
-    DrawRepository drawRepository
-    @Mock
-    GiveAwayRepository giveAwayRepository
-
-    
-
+    EventRepository eventRepository = Stub(EventRepository)
+    DrawRepository drawRepository = Stub(DrawRepository)
+    GiveAwayRepository giveAwayRepository = Stub(GiveAwayRepository)
 
     def "can draw on new giveaway"() {
         given:
-        def noOfAttendees = 2
-        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
+            def noOfAttendees = 2
+            def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
         when:
-        Draw draw = drawService.draw(1L, 1)
+            def draw = drawService.draw(1L, 1)
         then:
-        draw.attendee.id in 1L..noOfAttendees
+            draw.attendee.id in 1L..noOfAttendees
     }
 
     def "can redraw on giveAway"() {
         given:
-        def noOfAttendees = 2
-        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
-
+            def noOfAttendees = 2
+            def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
         when:
-        Draw draw = drawService.draw(1L, 1)
-        when(drawService.drawRepository.getOne(draw.id)).thenReturn(draw)
-        Draw newDraw = drawService.draw(draw.id, 1L, 1)
-
+            def draw = drawService.draw(1L, 1)
+            drawService.drawRepository.getOne(draw.id) >> draw
+            def newDraw = drawService.draw(draw.id, 1L, 1)
         then:
-        draw.attendee.id in 1L..noOfAttendees
+            newDraw.attendee.id in 1L..noOfAttendees
     }
-    
+
     def "cannot draw on confirmed single draw giveaway"() {
-
         given:
-        def noOfAttendees = 2
-        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
-        def draw = drawService.draw(1L, 1)
-        confirmDraw(draw)
+            def noOfAttendees = 2
+            def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees)
+            def draw = drawService.draw(1L, 1)
+            confirmDraw(draw)
         when:
-        def nextDraw = drawService.draw(1L, 1L)
-
+            def nextDraw = drawService.draw(1L, 1L)
         then:
-        nextDraw == null
+            nextDraw == null
     }
 
     def "can draw two times on confirmed single draw giveaway with two items"() {
-
         given:
-        def noOfAttendees = 2
-        def noOfItems = 2
-        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems)
-        def draw = drawService.draw(1L, 1)
-        confirmDraw(draw)
+            def noOfAttendees = 2
+            def noOfItems = 2
+            def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems)
+            def draw = drawService.draw(1L, 1)
+            confirmDraw(draw)
         when:
-        def nextDraw = drawService.draw(1L, 1L)
-
+            def nextDraw = drawService.draw(1L, 1L)
         then:
-        nextDraw != null
-        nextDraw.attendee.id in 1L..noOfAttendees
+            nextDraw != null
+            nextDraw.attendee.id in 1L..noOfAttendees
     }
 
     @Unroll("test repeated #i time")
     def "can draw two times on confirmed single draw giveaway with two items and both attendes should win"() {
-
         given:
-        
-        def noOfAttendees = 2
-        def noOfItems = 2
-        def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems)
+            def noOfAttendees = 2
+            def noOfItems = 2
+            def drawService = getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems)
         when:
-
-        def firstDraw = drawService.draw(1L, 1L)
-        confirmDraw(firstDraw)
-        getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems, [firstDraw])
-        def secondDraw = drawService.draw(1L, 1L)
-        confirmDraw(secondDraw)
-        getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems, [firstDraw, secondDraw])
-        def thirdDraw = drawService.draw(1L, 1L)
-
+            def firstDraw = drawService.draw(1L, 1L)
+            confirmDraw(firstDraw)
+            getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems, [firstDraw])
+            def secondDraw = drawService.draw(1L, 1L)
+            confirmDraw(secondDraw)
+            getServiceWithSingleGiveAwayEvent(noOfAttendees, noOfItems, [firstDraw, secondDraw])
+            def thirdDraw = drawService.draw(1L, 1L)
         then:
-        firstDraw != null
-        secondDraw != null
-        thirdDraw == null
-        [firstDraw, secondDraw].attendee.id as Set == (1..noOfAttendees) as Set
-         
+            firstDraw != null
+            secondDraw != null
+            thirdDraw == null
+            [firstDraw, secondDraw].attendee.id as Set == (1..noOfAttendees) as Set
         where:
             i << (1..10) //hack for randomize - should be done with mockRandomizer
     }
-    
 
-    
     private void confirmDraw(Draw draw) {
         draw.confirmed = true
-        when(drawRepository.getOne(1L)).thenReturn(draw)
+        drawRepository.getOne(1L) >> draw
     }
 
-
-    def getServiceWithSingleGiveAwayEvent(int noOfAttendees, int noOfPrizesPerGiveAway = 1, List<Draw> draws = []) {
-        initMocks(this)
-        noOfAttendees = 2
-
-
+    def getServiceWithSingleGiveAwayEvent(int noOfAttendees = 2, int noOfPrizesPerGiveAway = 1, List<Draw> draws = []) {
         def event = eventWith(1, 1, noOfAttendees, [1: new Prize(id: 1, name: "prize")], noOfPrizesPerGiveAway, draws)
-        when(eventRepository.getOne(1L)).thenReturn(event)
-        return new DrawService(eventRepository, drawRepository, giveAwayRepository, mock(MeetupMemberRepository.class))
+        eventRepository.getOne(1L) >> event
+        return new DrawService(eventRepository, drawRepository, giveAwayRepository, Mock(MeetupMemberRepository))
     }
 
     def eventWith(int id, int noOfGiveaways, int noOfMembers, Map<Integer, Prize> prizes, int drawsNo, List<Draw> draws) {
@@ -143,8 +113,8 @@ class DrawServiceTest extends Specification {
             new GiveAway(amount: drawsNo, id: it, prize: prizes[it], draws: draws)
         }
 
-        giveAways.each { when(giveAwayRepository.getOne(it.id)).thenReturn(it) }
-        
+        giveAways.each { giveAwayRepository.getOne(it.id) >> it }
+
         return new Event(id: id, attendees: members, startDate: LocalDateTime.now(),
                 endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, title: 'testEvent')
 
