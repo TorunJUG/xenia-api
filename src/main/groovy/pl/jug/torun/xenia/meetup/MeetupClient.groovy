@@ -97,7 +97,8 @@ class MeetupClient {
                         meetupId: json?.id as Long,
                         startDate: startDate,
                         endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
-                        updatedAt: lastUpdate
+                        updatedAt: lastUpdate,
+                        attendees: []
                 )
             }
         }
