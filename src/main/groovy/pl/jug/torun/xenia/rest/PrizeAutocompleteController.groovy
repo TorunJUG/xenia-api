@@ -11,7 +11,7 @@ import pl.jug.torun.xenia.dao.PrizeRepository
  * Created by dex
  */
 @RestController
-@RequestMapping(value = "/price/autocomplete", produces = ["application/json"], method = RequestMethod.GET)
+@RequestMapping(value = "/prize/autocomplete", produces = ["application/json"], method = RequestMethod.GET)
 class PrizeAutocompleteController {
     
     @Autowired
