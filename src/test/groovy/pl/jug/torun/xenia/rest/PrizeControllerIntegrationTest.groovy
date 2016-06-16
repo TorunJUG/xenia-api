@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
-@WebIntegrationTest(randomPort = true)
+@IntegrationTest
 @Transactional
 class PrizeControllerIntegrationTest  {
 
