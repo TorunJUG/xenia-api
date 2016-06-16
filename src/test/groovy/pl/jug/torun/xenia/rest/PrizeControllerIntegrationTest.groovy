@@ -7,6 +7,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.IntegrationTest
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -22,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
-@IntegrationTest
+@WebIntegrationTest(randomPort = true)
 @Transactional
 class PrizeControllerIntegrationTest  {
 
