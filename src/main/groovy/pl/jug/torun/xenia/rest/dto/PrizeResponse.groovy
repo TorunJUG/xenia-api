@@ -1,11 +1,12 @@
 package pl.jug.torun.xenia.rest.dto
 
-import groovy.transform.Immutable
+import groovy.transform.ToString
 import pl.jug.torun.xenia.model.Prize
 
 /**
  * Created by mephi_000 on 06.09.14.
  */
+@ToString(includePackage = false)
 class PrizeResponse {
     final Long id
     final String name
