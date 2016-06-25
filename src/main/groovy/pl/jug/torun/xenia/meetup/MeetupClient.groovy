@@ -18,33 +18,16 @@ class MeetupClient {
 
     private static final String MEETUP_API_HOST = 'https://api.meetup.com'
 
-    @Value('${meetup.key:""}')
-    String key
-    @Value('${meetup.code:""}')
-    String code
-
-    @Value('${meetup.mail.subject_template:""}')
-    String subjectTemplate
-
-    @Value('${meetup.mail.body_template:""}')
-    String bodyTemplate
-
-
-    @Value('${meetup.groupId:""}')
-    String groupId
-
-    @Value('${meetup.access_token:""}')
-    String token
+    @Autowired
+    MeetupProperty meetupProperty
 
     @Autowired
     TokenRequester tokenRequester
 
-    String groupUrlName
-
     List<Event> findAllEvents() {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
-        Map params = [key: key, group_urlname: groupUrlName, status: 'upcoming,past']
+        Map params = [key: meetupProperty.key, group_urlname: meetupProperty.groupUrlName, status: 'upcoming,past']
 
         HttpResponseDecorator response = request.get(
                 path: '/2/events.json',
@@ -58,7 +41,7 @@ class MeetupClient {
     List<MeetupMember> findAllAttendeesOfEvent(Long id) {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
-        Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
+        Map params = [key: meetupProperty.key, group_urlname: meetupProperty.groupUrlName, event_id: id, rsvp: 'yes']
 
         HttpResponseDecorator response = request.get(
                 path: '/2/rsvps.json',
@@ -74,7 +57,7 @@ class MeetupClient {
 
         Map params = [
                 dryrun   : true,
-                member_id: member.id, group_id: groupId, access_token: token,
+                member_id: member.id, group_id: meetupProperty.groupId, access_token: meetupProperty.token,
                 subject  : String.format(subjectTemplate, prize.name), message: String.format(bodyTemplate, prize.name)
         ]
 

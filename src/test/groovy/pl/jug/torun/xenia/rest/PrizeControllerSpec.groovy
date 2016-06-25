@@ -3,9 +3,9 @@ package pl.jug.torun.xenia.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.IntegrationTest
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
@@ -22,9 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
-@WebAppConfiguration
-@IntegrationTest
-class PrizeControllerSpec extends Specification {
+@WebIntegrationTest(randomPort = true)
+class PrizeControllerSpec extends Specification{
 
     @Autowired
     WebApplicationContext webApplicationContext
