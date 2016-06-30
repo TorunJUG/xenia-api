@@ -20,10 +20,13 @@ class GiveAway {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
+
     @OneToOne
     Prize prize
+
     @Column(nullable = false)
     int amount
+
     @OneToMany(cascade = CascadeType.ALL)
     List<Draw> draws
 }

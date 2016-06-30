@@ -42,33 +42,28 @@ class PrizeAutocompleteControllerSpec extends Specification {
     @Unroll
     def "should return #expected names for #name"() {
         when:
-        def names = controller.getName(name)
-
+            def names = controller.getName(name)
         then:
-        names == expected.toSet()
-
+            names == expected.toSet()
         where:
-        name            | expected
-        ""              | ["Licencja IntelliJ IDEA od JetBrains", "Licencja jProfiler", "Licencja Retrospective", "Miesięczna subskrypcja Pluralsight", "Spring Boot in Action"]
-        "LIC"           | ["Licencja IntelliJ IDEA od JetBrains", "Licencja jProfiler", "Licencja Retrospective"]
-        "jProfiler"     | []
+            name        | expected
+            ""          | ["Licencja IntelliJ IDEA od JetBrains", "Licencja jProfiler", "Licencja Retrospective", "Miesięczna subskrypcja Pluralsight", "Spring Boot in Action"]
+            "LIC"       | ["Licencja IntelliJ IDEA od JetBrains", "Licencja jProfiler", "Licencja Retrospective"]
+            "jProfiler" | []
     }
-
 
     @Unroll
     def "should return #expected sponsors for #name"() {
         when:
-        def names = controller.getSponsor(name)
-
+            def names = controller.getSponsor(name)
         then:
-        names == expected.toSet()
-
+            names == expected.toSet()
         where:
-        name            | expected
-        ""              | ["Zbyszko", "UMK", "Toruń JUG"]
-        "z"             | ["Zbyszko"]
-        "dupa"          | []
-        "um"            | ["UMK"]
-        "umk "          | []
+            name   | expected
+            ""     | ["Zbyszko", "UMK", "Toruń JUG"]
+            "z"    | ["Zbyszko"]
+            "foo" | []
+            "um"   | ["UMK"]
+            "umk " | []
     }
 }

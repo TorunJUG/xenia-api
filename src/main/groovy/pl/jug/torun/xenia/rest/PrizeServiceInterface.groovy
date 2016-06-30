@@ -8,7 +8,10 @@ import pl.jug.torun.xenia.rest.dto.PrizeRequest
  */
 interface PrizeServiceInterface {
     Prize get(long id)
+
     Prize create(final PrizeRequest prizeRequest)
+
     Prize update(long id, final PrizeRequest prizeRequest)
+
     void delete(long id)
 }

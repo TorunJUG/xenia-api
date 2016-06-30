@@ -39,7 +39,7 @@ class MeetupEventsService implements EventsService {
     }
 
     private List<Event> createOrUpdateLocalEvents(List<Event> remoteEvents, List<Event> localEvents) {
-         remoteEvents.each { Event remoteEvent ->
+        remoteEvents.each { Event remoteEvent ->
             Event localEvent = localEvents.find { it.meetupId == remoteEvent.meetupId }
             if (localEvent) {
                 refreshEvent(localEvent)
@@ -91,5 +91,4 @@ class MeetupEventsService implements EventsService {
             }
         }
     }
-
 }

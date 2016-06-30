@@ -9,5 +9,6 @@ import pl.jug.torun.xenia.model.Prize
  */
 interface GiveAwayRepository extends JpaRepository<GiveAway, Long> {
     List<GiveAway> findByPrize(Prize prize)
+
     long countByPrizeId(long prizeId)
 }

@@ -16,7 +16,7 @@ import javax.persistence.OneToOne
 class MeetupMember {
     @Id
     long id
+
     @OneToOne(cascade = CascadeType.ALL)
     Member member
-    
 }
