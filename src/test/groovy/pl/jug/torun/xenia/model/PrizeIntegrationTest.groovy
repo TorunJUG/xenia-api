@@ -19,8 +19,8 @@ class PrizeIntegrationTest extends Specification {
         given:
             def prize = new Prize(name: 'Licencja na IntelliJIDEA', producer: 'JetBrains', sponsorName: 'JetBrains')
         when:
-            def persistedPrize = prizeRepository.save(prize)
+        def persistedPrize = prizeRepository.save(prize)
         then:
-            persistedPrize.id > 0L
+        persistedPrize.id > 0L
     }
 }

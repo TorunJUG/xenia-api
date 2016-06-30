@@ -9,6 +9,5 @@ import pl.jug.torun.xenia.model.meetup.MeetupMember
  */
 public interface MeetupMemberRepository extends JpaRepository<MeetupMember, Long> {
 
-    
     MeetupMember getByMember(Member member)
 }

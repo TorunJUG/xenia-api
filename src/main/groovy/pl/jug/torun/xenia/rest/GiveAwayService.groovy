@@ -13,17 +13,17 @@ import pl.jug.torun.xenia.rest.dto.GiveAwayRequest
  * Created by mephi_000 on 06.09.14.
  */
 @Service
-class GiveAwayService implements GiveAwayServiceInterface{
+class GiveAwayService implements GiveAwayServiceInterface {
 
     @Autowired
     EventRepository eventRepository
 
     @Autowired
     PrizeRepository prizeRepository
-    
+
     @Autowired
     GiveAwayRepository giveAwayRepository
-    
+
     @Override
     @Transactional
     GiveAway saveGiveAway(long eventId, GiveAwayRequest request) {
@@ -32,7 +32,6 @@ class GiveAwayService implements GiveAwayServiceInterface{
         def event = eventRepository.getOne(eventId)
         giveAwayRepository.save(giveAway)
         event.giveAways.add(giveAway)
-
         eventRepository.save(event)
         return giveAway
     }

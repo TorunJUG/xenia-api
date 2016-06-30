@@ -30,22 +30,19 @@ class PrizesControllerTest extends Specification {
 
             (1..10).each {
                 prizeRepository.save(
-                        new Prize(name: "${it}", deleted: it % 2 == 0)
+                    new Prize(name: "${it}", deleted: it % 2 == 0)
                 )
             }
-
             initialized = true
         }
     }
 
     def "should return all non-deleted prizes"() {
         when:
-        PrizesResponse response = controller.getPrizes()
-
+            PrizesResponse response = controller.getPrizes()
         then:
-        response.prizes.size() == 5
-
+            response.prizes.size() == 5
         and:
-        response.prizes.every { it.name.toLong() % 2l == 1l }
+            response.prizes.every { it.name.toLong() % 2l == 1l }
     }
 }

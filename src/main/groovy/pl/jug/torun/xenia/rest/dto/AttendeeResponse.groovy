@@ -9,12 +9,10 @@ class AttendeeResponse {
     long id
     String displayName
     String photoUrl
-    
-    
+
     AttendeeResponse(Member attendee) {
         this.id = attendee.id
         this.displayName = attendee.displayName
         this.photoUrl = attendee.photoUrl
     }
-   
 }

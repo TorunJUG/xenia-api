@@ -47,9 +47,9 @@ class MeetupClient {
         Map params = [key: key, group_urlname: groupUrlName, status: 'upcoming,past']
 
         HttpResponseDecorator response = request.get(
-                path: '/2/events.json',
-                query: params,
-                contentType: 'application/json'
+            path: '/2/events.json',
+            query: params,
+            contentType: 'application/json'
         ) as HttpResponseDecorator
 
         return response.data?.results?.collect { EventConverter.createFromJSON(it) }
@@ -61,9 +61,9 @@ class MeetupClient {
         Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
 
         HttpResponseDecorator response = request.get(
-                path: '/2/rsvps.json',
-                query: params,
-                contentType: 'application/json'
+            path: '/2/rsvps.json',
+            query: params,
+            contentType: 'application/json'
         ) as HttpResponseDecorator
 
         return response?.data?.results?.collect { MemberConverter.createFromJSON(it) }
@@ -73,44 +73,42 @@ class MeetupClient {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
         Map params = [
-                dryrun   : true,
-                member_id: member.id, group_id: groupId, access_token: token,
-                subject  : String.format(subjectTemplate, prize.name), message: String.format(bodyTemplate, prize.name)
+            dryrun   : true,
+            member_id: member.id, group_id: groupId, access_token: token,
+            subject  : String.format(subjectTemplate, prize.name), message: String.format(bodyTemplate, prize.name)
         ]
 
         def post = request.post(
-                path: '/2/message',
-                body: params,
-                contentType: 'application/x-www-form-urlencoded'
+            path: '/2/message',
+            body: params,
+            contentType: 'application/x-www-form-urlencoded'
         )
-       
     }
 
+    private static class EventConverter {
+        static Event createFromJSON(Map json) {
+            LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
+            LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
 
-        private static class EventConverter {
-            static Event createFromJSON(Map json) {
-                LocalDateTime startDate = new LocalDateTime(Long.valueOf(json?.time))
-                LocalDateTime lastUpdate = new LocalDateTime(Long.valueOf(json?.updated))
-
-                return new Event(
-                        title: json?.name,
-                        meetupId: json?.id as Long,
-                        startDate: startDate,
-                        endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
-                        updatedAt: lastUpdate,
-                        attendees: []
-                )
-            }
-        }
-
-        private static class MemberConverter {
-            static MeetupMember createFromJSON(Map json) {
-                return new MeetupMember(id: json?.member?.member_id,
-                        member: new Member(
-                                displayName: json?.member?.name,
-                                photoUrl: json?.member_photo?.thumb_link
-                        )
-                )
-            }
+            return new Event(
+                title: json?.name,
+                meetupId: json?.id as Long,
+                startDate: startDate,
+                endDate: json?.duration ? startDate.plusMillis(Integer.valueOf(json?.duration)) : startDate.plusHours(3),
+                updatedAt: lastUpdate,
+                attendees: []
+            )
         }
     }
+
+    private static class MemberConverter {
+        static MeetupMember createFromJSON(Map json) {
+            return new MeetupMember(id: json?.member?.member_id,
+                member: new Member(
+                    displayName: json?.member?.name,
+                    photoUrl: json?.member_photo?.thumb_link
+                )
+            )
+        }
+    }
+}

@@ -21,6 +21,7 @@ class Draw {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id
+
     @OneToOne
     Member attendee
 
@@ -30,5 +31,4 @@ class Draw {
 
     @Column(nullable = false)
     boolean confirmed = false
-
 }

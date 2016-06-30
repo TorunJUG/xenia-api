@@ -5,5 +5,4 @@ package pl.jug.torun.xenia.rest.dto
  */
 class DrawsResponse {
     List<DrawResponse> draws
-    
 }

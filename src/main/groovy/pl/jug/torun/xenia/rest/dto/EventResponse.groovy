@@ -10,7 +10,7 @@ class EventResponse {
     String title
     String startDate
     String endDate
-    
+
     EventResponse(Event event) {
         this.id = event.id
         this.title = event.title
@@ -18,32 +18,36 @@ class EventResponse {
         this.endDate = event.endDate.toString()
     }
 
-
     @Override
     public String toString() {
         return "EventResponse{id=$id, title='$title', startDate='$startDate', endDate='$endDate'}";
     }
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
+    @Override
+    boolean equals(Object obj) {
 
-        EventResponse that = (EventResponse) o
+        if(obj == null) {
+            return false
+        }
 
-        if (id != that.id) return false
-        if (endDate != that.endDate) return false
-        if (startDate != that.startDate) return false
-        if (title != that.title) return false
+        if (obj.is(this)) {
+            return true
+        }
 
-        return true
+        if (!(obj instanceof EventResponse)) {
+            return false
+        }
+
+        EventResponse other = (EventResponse) obj
+
+        return Objects.equals(id, other.id) &&
+            Objects.equals(endDate, other.endDate) &&
+            Objects.equals(startDate, other.startDate) &&
+            Objects.equals(title, other.title)
     }
 
+    @Override
     int hashCode() {
-        int result
-        result = (int) (id ^ (id >>> 32))
-        result = 31 * result + (title != null ? title.hashCode() : 0)
-        result = 31 * result + (startDate != null ? startDate.hashCode() : 0)
-        result = 31 * result + (endDate != null ? endDate.hashCode() : 0)
-        return result
+        return Objects.hash(id, title, startDate, endDate)
     }
 }

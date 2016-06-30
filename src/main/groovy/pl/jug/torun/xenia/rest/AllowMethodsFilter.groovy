@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse
  */
 
 @Component
-class AllowMethodsFilter implements Filter{
+class AllowMethodsFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -27,6 +27,6 @@ class AllowMethodsFilter implements Filter{
 
     public void init(FilterConfig filterConfig) {}
 
-    public void destroy() {} 
-    
+    public void destroy() {}
+
 }

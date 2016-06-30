@@ -49,17 +49,15 @@ class PrizeControllerIntegrationTest extends Specification {
     def "Should return prize response for requesting existing prize object"() {
         given:
             def existingPrize = prizeRepository.save(new Prize(name: 'Istniejaca nagroda', producer: 'Zbyszko', sponsorName: 'Szymon'))
-
         when:
-            def response = prizeController.get(existingPrize.id)
+         def response = prizeController.get(existingPrize.id)
         then:
             response.every {
                 it.id == existingPrize.id &&
-                        it.name == existingPrize.name &&
-                        it.imageUrl == existingPrize.imageUrl &&
-                        it.sponsorName == existingPrize.sponsorName &&
-                        it.producer == existingPrize.producer
+                    it.name == existingPrize.name &&
+                    it.imageUrl == existingPrize.imageUrl &&
+                    it.sponsorName == existingPrize.sponsorName &&
+                    it.producer == existingPrize.producer
             }
     }
-
 }

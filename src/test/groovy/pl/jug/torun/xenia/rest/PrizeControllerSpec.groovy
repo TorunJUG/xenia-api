@@ -37,8 +37,8 @@ class PrizeControllerSpec extends Specification {
     void setup() {
         if (request == null) {
             request = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                    .dispatchOptions(true)
-                    .build()
+                .dispatchOptions(true)
+                .build()
         }
     }
 
@@ -50,17 +50,19 @@ class PrizeControllerSpec extends Specification {
         then:
             def createdPrizeId = getCreatedPrizeId()
             response.andExpect(status().isCreated())
-                    .andExpect(jsonPath('$.resourceUrl', is(equalTo("/prize/" + createdPrizeId))))
+                .andExpect(jsonPath('$.resourceUrl', is(equalTo("/prize/" + createdPrizeId))))
+
         when:
             response = request.perform(post("/prize").contentType(MediaType.APPLICATION_JSON).content(json))
         then:
             response.andExpect(status().isBadRequest())
-                    .andExpect(jsonPath('$.message', is(equalTo("Prize with name 'Test' already exists"))))
+                .andExpect(jsonPath('$.message', is(equalTo("Prize with name 'Test' already exists"))))
+
         when:
             response = request.perform(post("/prize").contentType(MediaType.APPLICATION_JSON).content('{ "name": "Test2", "producer": "Microsoft" }'))
         then:
             response.andExpect(status().isCreated())
-                    .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/' + (createdPrizeId + 1)))))
+                .andExpect(jsonPath('$.resourceUrl', is(equalTo('/prize/' + (createdPrizeId + 1)))))
     }
 
     private long getCreatedPrizeId() {
@@ -76,15 +78,14 @@ class PrizeControllerSpec extends Specification {
             def response = request.perform(put("/prize/${prize.id}").contentType(MediaType.APPLICATION_JSON).content(json))
         then:
             response.andExpect(status().isOk())
-                    .andExpect(jsonPath('$.name', is(equalTo('updateTestUpdated'))))
-                    .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
-                    .andExpect(jsonPath('$.producer', is(equalTo('Microsoft'))))
+                .andExpect(jsonPath('$.name', is(equalTo('updateTestUpdated'))))
+                .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
+                .andExpect(jsonPath('$.producer', is(equalTo('Microsoft'))))
     }
 
     def "Should not allow to use name that is alredy used"() {
         given:
             prizeRepository.save(new Prize(name: 'prize2', producer: 'Microsoft'))
-
             def prize = prizeRepository.save(new Prize(name: 'prize', producer: 'Microsoft'))
             def prizeJson = '{"name":"prize2"}'
         when:
@@ -101,8 +102,8 @@ class PrizeControllerSpec extends Specification {
             def response = request.perform(put("/prize/${prize.id}").contentType(MediaType.APPLICATION_JSON).content(json))
         then:
             response.andExpect(status().isOk())
-                    .andExpect(jsonPath('$.name', is(equalTo('prize4'))))
-                    .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
-                    .andExpect(jsonPath('$.producer', is(equalTo('Google'))))
+                .andExpect(jsonPath('$.name', is(equalTo('prize4'))))
+                .andExpect(jsonPath('$.id', is(equalTo(prize.id as int))))
+                .andExpect(jsonPath('$.producer', is(equalTo('Google'))))
     }
 }

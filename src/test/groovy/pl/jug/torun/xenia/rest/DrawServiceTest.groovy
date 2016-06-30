@@ -116,8 +116,6 @@ class DrawServiceTest extends Specification {
         giveAways.each { giveAwayRepository.getOne(it.id) >> it }
 
         return new Event(id: id, attendees: members, startDate: LocalDateTime.now(),
-                endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, title: 'testEvent')
-
+            endDate: LocalDateTime.now().plusHours(1), giveAways: giveAways, title: 'testEvent')
     }
-
 }

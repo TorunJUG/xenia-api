@@ -1,7 +1,6 @@
 package pl.jug.torun.xenia.model
 
 
-
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -17,32 +16,39 @@ class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id
+
     @Column(nullable = false)
     String displayName
+
     @Column(nullable = true)
     String photoUrl
 
     @Override
     public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", displayName='" + displayName + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                '}';
+        return "Member{id=$id, displayName='$displayName', photoUrl='$photoUrl'}"
     }
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
+    @Override
+    boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-        Member member = (Member) o
+        if (obj.is(this)) {
+            return true
+        }
 
-        if (id != member.id) return false
+        if (!(obj instanceof Member)) {
+            return false
+        }
 
-        return true
+        Member other = (Member) obj
+
+        return Objects.equals(id, other.id)
     }
 
+    @Override
     int hashCode() {
-        return (int) (id ^ (id >>> 32))
+        return Objects.hash(id)
     }
 }

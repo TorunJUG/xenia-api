@@ -3,12 +3,10 @@ package pl.jug.torun.xenia.rest
 import org.joda.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 import pl.jug.torun.xenia.dao.DrawRepository
 import pl.jug.torun.xenia.dao.EventRepository
 import pl.jug.torun.xenia.dao.GiveAwayRepository
 import pl.jug.torun.xenia.dao.MeetupMemberRepository
-import pl.jug.torun.xenia.dao.PrizeRepository
 import pl.jug.torun.xenia.meetup.MeetupClient
 import pl.jug.torun.xenia.model.Draw
 import pl.jug.torun.xenia.model.Event
@@ -23,17 +21,17 @@ import javax.transaction.Transactional
 @Service
 class DrawService implements DrawServiceInterface {
 
-
     final EventRepository eventRepository
     final DrawRepository drawRepository
     final GiveAwayRepository giveAwayRepository
     private MeetupMemberRepository meetupMemberRepository
+
     @Autowired
     MeetupClient meetupClient
 
     @Autowired
     public DrawService(EventRepository eventRepository, DrawRepository drawRepository, GiveAwayRepository giveAwayRepository,
-                       MeetupMemberRepository meetupMemberRepository) {
+        MeetupMemberRepository meetupMemberRepository) {
         this.meetupMemberRepository = meetupMemberRepository
         this.giveAwayRepository = giveAwayRepository
         this.drawRepository = drawRepository
@@ -45,15 +43,14 @@ class DrawService implements DrawServiceInterface {
         def event = eventRepository.getOne(eventId)
         def giveAway = giveAwayRepository.getOne(giveAwayId)
         def confirmed = giveAway.draws.count { it.confirmed }
-        if (confirmed < giveAway.amount) {
 
+        if (confirmed < giveAway.amount) {
             def attendees = getAvailableMembersForDraw(event, giveAway)
             def winner = attendees.get(new Random().nextInt(attendees.size()))
             def draw = new Draw(attendee: winner, confirmed: false, drawDate: LocalDateTime.now())
             drawRepository.save(draw)
             giveAway.draws.add(draw)
             eventRepository.save(event)
-
             return draw
         }
 
@@ -64,16 +61,12 @@ class DrawService implements DrawServiceInterface {
     public Draw draw(long id, long eventId, long giveAwayId) {
         def event = eventRepository.getOne(eventId)
         def giveAway = giveAwayRepository.getOne(giveAwayId)
-
         def attendees = getAvailableMembersForDraw(event, giveAway)
-        println(event)
         def winner = attendees.get(new Random().nextInt(attendees.size()))
         def draw = drawRepository.getOne(id)
         draw.attendee = winner
         draw.drawDate = LocalDateTime.now()
-
         drawRepository.save(draw)
-
         return draw
 
     }
@@ -84,18 +77,17 @@ class DrawService implements DrawServiceInterface {
         event.giveAways.each { giveAway ->
             def drew = giveAway.draws.size()
             def left = giveAway.amount - drew
-            if (left > 0)
+            if (left > 0) {
                 (1..left).each {
                     def attendees = getAvailableMembersForDraw(event, giveAway)
                     def winner = attendees.get(new Random().nextInt(attendees.size()))
                     def draw = new Draw(attendee: winner, confirmed: false, drawDate: LocalDateTime.now())
                     drawRepository.save(draw)
                     giveAway.draws.add(draw)
-
                 }
+            }
         }
     }
-
 
     @Override
     def confirmDraw(long eventId, long giveAwayId, long id) {
@@ -104,7 +96,7 @@ class DrawService implements DrawServiceInterface {
         drawRepository.save(draw)
         try {
             meetupClient.sendGiveawayConfirmation(meetupMemberRepository.getByMember(draw.attendee),
-                    giveAwayRepository.getOne(giveAwayId).prize)
+                giveAwayRepository.getOne(giveAwayId).prize)
         } catch (Exception e) {
             //TODO: no problem if no mail sent for now
         }
@@ -113,8 +105,8 @@ class DrawService implements DrawServiceInterface {
     @Override
     def confirmDraws(long eventId) {
         def event = eventRepository.getOne(eventId)
-        event.giveAways.each {giveAway ->
-            giveAway.draws.findAll {!it.confirmed} .each { it.confirmed = true}
+        event.giveAways.each { giveAway ->
+            giveAway.draws.findAll { !it.confirmed }.each { it.confirmed = true }
         }
         eventRepository.save(event)
     }
@@ -125,7 +117,5 @@ class DrawService implements DrawServiceInterface {
         }).attendee.flatten()
 
         return event.attendees - event.giveAways.draws.attendee.flatten() - memberWhoWonThePrize
-
     }
-
 }

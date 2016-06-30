@@ -1,6 +1,5 @@
 package pl.jug.torun.xenia.rest.dto
 
-import groovy.transform.Immutable
 import pl.jug.torun.xenia.model.Prize
 
 /**
@@ -14,9 +13,9 @@ class PrizeRequest {
     String imageUrl
 
     PrizeRequest() {
-        
+
     }
-    
+
     PrizeRequest(String name, String producer, String sponsorName, String imageUrl) {
         this.name = name
         this.producer = producer
