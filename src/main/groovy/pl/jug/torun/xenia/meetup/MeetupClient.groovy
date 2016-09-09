@@ -44,7 +44,8 @@ class MeetupClient {
     List<Event> findAllEvents() {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
-        Map params = [key: key, group_urlname: groupUrlName, status: 'upcoming,past']
+        Map params = [key: key, group_urlname: groupUrlName, status: 'upcoming,past',
+                      only: 'time,updated,name,id,duration']
 
         HttpResponseDecorator response = request.get(
                 path: '/2/events.json',
@@ -58,7 +59,7 @@ class MeetupClient {
     List<MeetupMember> findAllAttendeesOfEvent(Long id) {
         RESTClient request = new RESTClient(MEETUP_API_HOST)
 
-        Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes']
+        Map params = [key: key, group_urlname: groupUrlName, event_id: id, rsvp: 'yes', only: 'member,member_photo']
 
         HttpResponseDecorator response = request.get(
                 path: '/2/rsvps.json',
