@@ -15,5 +15,6 @@ hs_err_pid*
 *.iml
 *.ipr
 *.db
+*.db.old
 
 target
