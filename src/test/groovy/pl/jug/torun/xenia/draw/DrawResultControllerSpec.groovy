@@ -111,13 +111,14 @@ class DrawResultControllerSpec extends Specification {
         controller.downloadCsv(event, response)
 
         then:
-        response.getContentAsString() == '''"Member ID","Won prize","Member name","Member e-mail"
-1,"Spring Boot in Action ebook","John","john@example.com"
-2,"Spring Boot in Action ebook","Mark Smith",""
-3,"Software license","Paul",""
-4,"Software license","Ann","ann@example.com"
-5,"Software license","Joe Doe",""
-'''
+        response.getContentAsString().readLines() == [
+                '"Member ID","Won prize","Member name","Member e-mail"',
+                '1,"Spring Boot in Action ebook","John","john@example.com"',
+                '2,"Spring Boot in Action ebook","Mark Smith",""',
+                '3,"Software license","Paul",""',
+                '4,"Software license","Ann","ann@example.com"',
+                '5,"Software license","Joe Doe",""'
+        ]
     }
 
     private Member member(String name, String email = "") {
