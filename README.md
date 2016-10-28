@@ -1,4 +1,4 @@
-Xenia-Api [![Build Status](https://travis-ci.org/TorunJUG/xenia-api.svg?branch=develop)](https://travis-ci.org/TorunJUG/xenia-api) [![Coverage Status](https://coveralls.io/repos/github/TorunJUG/xenia-api/badge.svg?branch=develop)](https://coveralls.io/github/TorunJUG/xenia-api)
+Xenia-Api [![Build Status](https://travis-ci.org/TorunJUG/xenia-api.svg?branch=develop)](https://travis-ci.org/TorunJUG/xenia-api) [![Coverage Status](https://coveralls.io/repos/github/TorunJUG/xenia-api/badge.svg?branch=develop)](https://coveralls.io/github/TorunJUG/xenia-api?branch=develop)
 =
 
 Backend application for Xenia - giveaway drawing machine that works in connection with your Meetup group. Create prizes, add giveaways to your events and draw winners in just a few easy steps!
