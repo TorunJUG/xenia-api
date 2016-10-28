@@ -59,7 +59,7 @@ class Xenia10DumpRecovery implements InitializingBean {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    private void recover() {
+    public void recover() {
         InputStream inputStream = getClass().getResourceAsStream(XENIA_10_DUMP_FILE)
 
         if (inputStream?.available()) {
