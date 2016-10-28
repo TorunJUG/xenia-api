@@ -240,15 +240,17 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <format>xml</format>
-                    <maxmem>256m</maxmem>
-                    <aggregate>true</aggregate>
-                    <instrumentation>
-                        <ignores>
-                            <ignore>java.util.logging.*</ignore>
-                        </ignores>
-                    </instrumentation>
-                    <check/>
+                    <check>
+                        <format>xml</format>
+                        <maxmem>256m</maxmem>
+                        <aggregate>true</aggregate>
+                        <instrumentation>
+                            <ignores>
+                                <ignore>java.util.logging.*</ignore>
+                            </ignores>
+                        </instrumentation>
+                        <haltOnFailure>false</haltOnFailure>
+                    </check>
                 </configuration>
             </plugin>
             <plugin>
