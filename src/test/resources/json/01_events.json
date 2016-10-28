@@ -1,0 +1,207 @@
+{
+  "results": [
+    {
+      "name": "1. spotkanie Toruń JUG",
+      "id": "173040582",
+      "time": 1395853200000
+    },
+    {
+      "name": "2. spotkanie Toruń JUG",
+      "id": "175597572",
+      "time": 1398268800000
+    },
+    {
+      "name": "3. spotkanie Toruń JUG",
+      "id": "181665332",
+      "time": 1401292800000
+    },
+    {
+      "name": "4. spotkanie Toruń JUG (gość specjalny)",
+      "id": "187742972",
+      "time": 1403884800000
+    },
+    {
+      "name": "Toruń Hackathon #1: Meetup Challenge",
+      "id": "201836452",
+      "time": 1409990400000
+    },
+    {
+      "name": "5. spotkanie Toruń JUG",
+      "id": "206212552",
+      "time": 1411574400000
+    },
+    {
+      "name": "6. spotkanie Toruń JUG",
+      "id": "213609002",
+      "time": 1414602000000
+    },
+    {
+      "name": "7. spotkanie Toruń JUG",
+      "id": "218644526",
+      "time": 1417021200000
+    },
+    {
+      "name": "8. spotkanie Toruń JUG",
+      "id": "219060454",
+      "time": 1418835600000
+    },
+    {
+      "name": "9. spotkanie Toruń JUG",
+      "id": "219822291",
+      "time": 1422464400000
+    },
+    {
+      "name": "10. spotkanie Toruń JUG",
+      "id": "220531738",
+      "time": 1424883600000
+    },
+    {
+      "name": "11. spotkanie (urodzinowe!) Toruń JUG",
+      "id": "221109474",
+      "time": 1427475600000
+    },
+    {
+      "name": "12. spotkanie Toruń JUG",
+      "id": "221855003",
+      "time": 1430323200000
+    },
+    {
+      "name": "13. spotkanie Toruń JUG",
+      "id": "222511915",
+      "time": 1432742400000
+    },
+    {
+      "name": "PolyConf 2015 Ticket Raffle",
+      "id": "222743795",
+      "time": 1432746000000
+    },
+    {
+      "name": "Hackathorn #2: Community/Integration Edition",
+      "id": "222983568",
+      "time": 1434798000000
+    },
+    {
+      "name": "14. spotkanie Toruń JUG",
+      "id": "223133594",
+      "time": 1435161600000
+    },
+    {
+      "name": "GeeCON Microservices Ticket Raffle",
+      "id": "224805332",
+      "time": 1440522000000
+    },
+    {
+      "name": "15. spotkanie Toruń JUG",
+      "id": "225429610",
+      "time": 1443628800000
+    },
+    {
+      "name": "16. spotkanie Toruń JUG",
+      "id": "226121516",
+      "time": 1446051600000
+    },
+    {
+      "name": "17. spotkanie Toruń JUG - Java 9 i Clojure",
+      "id": "226787041",
+      "time": 1448470800000
+    },
+    {
+      "name": "18. spotkanie Toruń JUG - Neo4j",
+      "id": "227270961",
+      "time": 1450285200000
+    },
+    {
+      "name": "ScalaSphere DevTools Summit Ticket Raffle",
+      "id": "227946434",
+      "time": 1452790800000
+    },
+    {
+      "name": "19. spotkanie Toruń JUG -  Java Memory Consistency Model",
+      "id": "228205885",
+      "time": 1453914000000
+    },
+    {
+      "name": "20. spotkanie Toruń JUG -  Keycloak i AsciiDoc",
+      "id": "228803946",
+      "time": 1456333200000
+    },
+    {
+      "name": "Warsztaty Apache Spark",
+      "id": "229194936",
+      "time": 1457769600000
+    },
+    {
+      "name": "21. spotkanie Toruń JUG -  Introduction to typeclasses, semigroups and monoids",
+      "id": "229280382",
+      "time": 1459353600000
+    },
+    {
+      "name": "TorunJUG.getSrc() // [#1] Xenia Development",
+      "id": "229784798",
+      "time": 1459587600000
+    },
+    {
+      "name": "22. spotkanie Toruń JUG -  Spring Boot",
+      "id": "229280389",
+      "time": 1461772800000
+    },
+    {
+      "name": "TorunJUG.getSrc() // [#2] Xenia Development",
+      "id": "230666233",
+      "time": 1463234400000
+    },
+    {
+      "name": "23. spotkanie Toruń JUG -  Microservices oraz Apache Camel",
+      "id": "230784549",
+      "time": 1464192000000
+    },
+    {
+      "name": "PolyConf 2016 Ticket Raffle",
+      "id": "231207682",
+      "time": 1464195600000
+    },
+    {
+      "name": "TorunJUG.getSrc() // [#3] Xenia Development",
+      "id": "231907372",
+      "time": 1466863200000
+    },
+    {
+      "name": "24. spotkanie Toruń JUG -  Lightning Talks",
+      "id": "230784575",
+      "time": 1467216000000
+    },
+    {
+      "name": "Allegro Tech Meeting 9 - Ticket Raffle",
+      "id": "232865542",
+      "time": 1469728800000
+    },
+    {
+      "name": "GeeCON Reactive 2016 - Ticket Raffle",
+      "id": "233115734",
+      "time": 1470679200000
+    },
+    {
+      "name": "25. spotkanie Toruń JUG -  CI/CD oraz Impact Mapping",
+      "id": "233863863",
+      "time": 1475078400000
+    },
+    {
+      "name": "JDD 2016 - Ticket Raffle",
+      "id": "234115403",
+      "time": 1475083800000
+    }
+  ],
+  "meta": {
+    "next": "",
+    "method": "Events",
+    "total_count": 38,
+    "link": "https://api.meetup.com/2/events",
+    "count": 38,
+    "description": "Access Meetup events using a group, member, or event id. Events in private groups are available only to authenticated members of those groups. To search events by topic or location, see [Open Events](/meetup_api/docs/2/open_events).",
+    "lon": "",
+    "title": "Meetup Events v2",
+    "id": "",
+    "updated": 1473843320000,
+    "lat": ""
+  }
+}
