@@ -1,0 +1,83 @@
+{
+  "results": [
+    {
+      "answers": [
+        "730e3c1b-aa68-4f14-b919-52af65c4d5a8@mailinator.com"
+      ],
+      "member": {
+        "member_id": 324,
+        "name": "Joe Doe"
+      },
+      "member_photo": {
+        "highres_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "photo_id": 100000231,
+        "base_url": "http://photos2.meetupstatic.com",
+        "type": "member",
+        "photo_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "thumb_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350"
+      }
+    },
+    {
+      "answers": [
+        "65e2d937-6b2e-4ca6-bf01-cc79b5b38f4c@mailinator.com"
+      ],
+      "member": {
+        "member_id": 325,
+        "name": "Paul Smith"
+      }
+    },
+    {
+      "member": {
+        "member_id": 326,
+        "name": "Mark Spencer"
+      },
+      "member_photo": {
+        "highres_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "photo_id": 1000002312,
+        "base_url": "http://photos3.meetupstatic.com",
+        "type": "member",
+        "photo_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "thumb_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350"
+      }
+    },
+    {
+      "answers": [
+        "5ba21436-b1ff-4979-a593-949e2c658a61@mailinator.com"
+      ],
+      "member": {
+        "member_id": 327,
+        "name": "Peter Johnson"
+      }
+    },
+    {
+      "answers": [
+        "16239485-0d61-4e0a-9556-ff516a000da5@mailinator.com"
+      ],
+      "member": {
+        "member_id": 328,
+        "name": "Michael Bacon"
+      },
+      "member_photo": {
+        "highres_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "photo_id": 100000432,
+        "base_url": "http://photos3.meetupstatic.com",
+        "type": "member",
+        "photo_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350",
+        "thumb_link": "https://placeholdit.imgix.net/~text?txtsize=33&txt=Avatar&w=350&h=350"
+      }
+    }
+  ],
+  "meta": {
+    "next": "",
+    "method": "RSVPs v2",
+    "total_count": 5,
+    "link": "https://api.meetup.com/2/rsvps",
+    "count": 5,
+    "description": "Query for Event RSVPs by event",
+    "lon": "",
+    "title": "Meetup RSVPs v2",
+    "id": "",
+    "updated": 1474226806000,
+    "lat": ""
+  }
+}
