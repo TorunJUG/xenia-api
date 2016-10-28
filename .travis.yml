@@ -1,4 +1,4 @@
 language: groovy
 sudo: false
 after_success:
-  - mvn -q -e clean cobertura:cobertura coveralls:report
+  - mvn -q -e clean test jacoco:report coveralls:report
