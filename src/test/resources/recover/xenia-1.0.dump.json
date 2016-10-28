@@ -1,0 +1,26 @@
+[
+  {
+    "eventId": 100023,
+    "member": "Joe Doe",
+    "prize": "IntelliJ IDEA Licence Key",
+    "prizeImage": "https://www.jetbrains.com/img/logos/intellijIdea.png"
+  },
+  {
+    "eventId": 100023,
+    "member": "Paul Smith",
+    "prize": "Structure101 Licence Key",
+    "prizeImage": "http://structure101.com/static-content/images/homepage/s101-logo-2013.png"
+  },
+  {
+    "eventId": 100024,
+    "member": "Paul Smith",
+    "prize": "'Scala in Action' eBook",
+    "prizeImage": "http://ecx.images-amazon.com/images/I/51C7kot3HkL._SX258_BO1,204,203,200_.jpg"
+  },
+  {
+    "eventId": 100024,
+    "member": "Margaret Lee Cooper",
+    "prize": "IntelliJ IDEA Licence Key",
+    "prizeImage": "https://www.jetbrains.com/img/logos/intellijIdea.png"
+  }
+]
