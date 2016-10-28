@@ -1,4 +1,4 @@
-language: java
+language: groovy
 sudo: false
 after_success:
   - mvn -q -e clean cobertura:cobertura coveralls:report
