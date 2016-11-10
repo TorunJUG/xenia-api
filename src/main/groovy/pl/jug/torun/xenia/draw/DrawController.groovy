@@ -20,9 +20,12 @@ final class DrawController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public DrawResult drawWinnerCandidate(@PathVariable("giveAway") GiveAway giveAway, @RequestParam(value = "absent", required = false) Member absentMember) {
+    public DrawResult drawWinnerCandidate(@PathVariable("giveAway") GiveAway giveAway, @RequestParam(value = "absent", required = false) Member absentMember,
+                                          @RequestParam(value = "skipped", required = false) Member skippedMember) {
         if (absentMember) {
             drawService.markMemberAsAbsentForCurrentDraw(absentMember, giveAway.event)
+        } else if (skippedMember) {
+            drawService.setGiveAwaySkippedForMember(skippedMember, giveAway)
         }
 
         return drawService.drawWinnerCandidate(giveAway)
