@@ -1,4 +1,6 @@
 language: groovy
+jdk:
+ - oraclejdk8
 sudo: false
 after_success:
   - mvn -q -e clean test jacoco:report coveralls:report
