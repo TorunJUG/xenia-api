@@ -4,10 +4,7 @@ import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ContextConfiguration
-import pl.jug.torun.xenia.events.Attendee
-import pl.jug.torun.xenia.events.AttendeeRepository
-import pl.jug.torun.xenia.events.Event
-import pl.jug.torun.xenia.events.EventRepository
+import pl.jug.torun.xenia.events.*
 import pl.jug.torun.xenia.meetup.Member
 import pl.jug.torun.xenia.meetup.MemberRepository
 import pl.jug.torun.xenia.prizes.Prize
@@ -17,6 +14,8 @@ import spock.lang.Stepwise
 import spock.lang.Subject
 
 import java.util.concurrent.atomic.AtomicLong
+
+import static org.apache.commons.lang.StringUtils.isNotBlank
 
 @Stepwise
 @DataJpaTest
@@ -53,7 +52,7 @@ class DrawServiceSpec extends Specification {
     private AtomicLong counter = new AtomicLong(0L)
 
     def setup() {
-        drawService = new DrawService(drawResultRepository, attendeeRepository, memberRepository)
+        drawService = new DrawService(drawResultRepository, new SkippedGiveAwayContainer(), attendeeRepository, memberRepository)
         giveAwayController = new GiveAwayController(giveAwayRepository, prizeRepository, drawResultRepository)
         event = event("Test event", DateTime.parse("2015-04-02T20:00:00"))
     }
@@ -80,7 +79,7 @@ class DrawServiceSpec extends Specification {
         thrown IllegalStateException
     }
 
-    def "should confirm that giveaway that requires email can be drawn by attendess with email only"() {
+    def "should confirm that giveaway that requires email can be drawn by attendees with email only"() {
         setup:
         GiveAway giveAway = giveAwayWithPrizeAndAmount("License", 1, true)
         attendee("John")
@@ -94,7 +93,7 @@ class DrawServiceSpec extends Specification {
         DrawResult result = drawService.drawWinnerCandidate(giveAway)
 
         then:
-        result.member.email != null && result.member.email != ""
+        isNotBlank(result.member.email)
 
         where:
         i << (1..RANDOM_TESTS_RUN_LIMIT)
@@ -204,6 +203,21 @@ class DrawServiceSpec extends Specification {
         i << (1..RANDOM_TESTS_RUN_LIMIT)
     }
 
+    def "should not allow attendee who skipped a giveaway to win same prize again during the same event"() {
+        setup:
+        GiveAway giveAway = giveAwayWithPrizeAndAmount("Something", 1)
+        attendee("Paul").with {
+            drawService.setGiveAwaySkippedForMember(it.member, giveAway)
+        }
+        attendee("Roger")
+
+        when:
+        Member winner = drawService.drawWinnerCandidate(giveAway).member
+
+        then:
+        winner.name == "Roger"
+    }
+
     def "should draw all giveaways and confirm winners"() {
         setup:
         GiveAway firstGiveAway = giveAwayWithPrizeAndAmount("Spring Boot in Action ebook", 2)
@@ -247,7 +261,18 @@ class DrawServiceSpec extends Specification {
         i << (1..RANDOM_TESTS_RUN_LIMIT)
     }
 
+    def "should mark attendee as absent"() {
+        given:
+            Attendee attendee = attendee("Roger")
+        when:
+            drawService.markMemberAsAbsentForCurrentDraw(attendee.member, event)
+        then:
+            storedAttendee(attendee).absent
+    }
 
+    private Attendee storedAttendee(Attendee attendee) {
+        return attendeeRepository.findAllByMemberId(attendee.member.id)[0]
+    }
 
     private GiveAway giveAwayWithAmount(int amount) {
         return giveAwayWithPrizeAndAmount("Test", amount)
@@ -274,7 +299,7 @@ class DrawServiceSpec extends Specification {
     }
 
     private Attendee absent(Attendee attendee) {
-        attendee.absent = true
-        return attendeeRepository.save(attendee)
+        drawService.markMemberAsAbsentForCurrentDraw(attendee.member, event)
+        return attendee
     }
 }

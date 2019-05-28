@@ -11,16 +11,21 @@ import pl.jug.torun.xenia.events.Event
 import pl.jug.torun.xenia.meetup.Member
 import pl.jug.torun.xenia.meetup.MemberRepository
 
+import static org.apache.commons.lang.StringUtils.isNotBlank
+
 @Slf4j
 @Service
 class DrawService {
     private final DrawResultRepository drawResultRepository
     private final AttendeeRepository attendeeRepository
     private final MemberRepository memberRepository
+    private final SkippedGiveAwayContainer skippedGiveAwayContainer
 
     @Autowired
-    DrawService(DrawResultRepository drawResultRepository, AttendeeRepository attendeeRepository, MemberRepository memberRepository) {
+    DrawService(DrawResultRepository drawResultRepository, SkippedGiveAwayContainer skippedGiveAwayContainer, AttendeeRepository attendeeRepository,
+                MemberRepository memberRepository) {
         this.drawResultRepository = drawResultRepository
+        this.skippedGiveAwayContainer = skippedGiveAwayContainer
         this.attendeeRepository = attendeeRepository
         this.memberRepository = memberRepository
     }
@@ -53,8 +58,12 @@ class DrawService {
         log.debug '{} members have won this prize already...', membersWhoHaveWonThisPrizeAlready.size()
         members.removeAll(membersWhoHaveWonThisPrizeAlready)
 
+        Set<Member> membersWithSkippedGiveAway = skippedGiveAwayContainer.getMembersByGiveAway(giveAway)
+        log.debug '{} members have skipped this prize already...', membersWithSkippedGiveAway.size()
+        members.removeAll(membersWithSkippedGiveAway)
+
         if (giveAway.emailRequired) {
-            members = members.findAll { it.email != null && !it.email.empty }
+            members = members.findAll { isNotBlank(it.email) }
         }
         return members
     }
@@ -77,4 +86,10 @@ class DrawService {
             attendeeRepository.save(attendee)
         }
     }
+
+    public void setGiveAwaySkippedForMember(Member member, GiveAway giveAway) {
+        log.debug 'Member {} skipped the draw result for {}', member, giveAway
+        skippedGiveAwayContainer.addSkippedMember(giveAway, member)
+    }
+
 }
